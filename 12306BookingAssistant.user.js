@@ -296,7 +296,7 @@ withjQuery(function($){
 			}).appendTo(e);
 		});
 	});
-	route("login.jsp", function() {
+	route("login", function() {
 		//login
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
@@ -326,7 +326,7 @@ withjQuery(function($){
 				success: function(msg){
 					if (msg.indexOf('请输入正确的验证码') > -1) {
 						alert('请输入正确的验证码！');
-					} else
+					};
 					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
 						reLogin();
 					}
