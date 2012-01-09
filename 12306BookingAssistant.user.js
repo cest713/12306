@@ -407,7 +407,7 @@ withjQuery(function($){
 						};
 						//Parse error message
 						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
-						stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
+						stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。'&&alert(msg));
 					},
 					error: function(msg){
 						reSubmitForm();
