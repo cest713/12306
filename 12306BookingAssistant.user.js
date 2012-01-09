@@ -437,10 +437,15 @@ withjQuery(function($){
 			//日期可选
 			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
-			    alert('开始自动提交订单，请点确定后耐心等待！');
+		
 				count = 1;
+				
+				if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+					return;
+				}
 			    $(this).html("(1)次自动提交中...");
 			    submitForm();
+			    alert('开始自动提交订单，请点确定后耐心等待！');
 			    return false;
 		    }));
 			alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
