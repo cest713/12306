@@ -425,7 +425,10 @@ withjQuery(function($){
 	//初始化
 	function stop ( msg ) {
 			$('#refreshButton').html("自动提交订单");
-			alert( msg );
+			alert( msg );			
+			if(window.confirmCancel && !confirmCancel('confirmPassenger') ) { 
+					return;
+				}
 		}
     if($("#refreshButton").size()<1){
 			//重置后加载所有席别
