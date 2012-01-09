@@ -352,6 +352,7 @@ withjQuery(function($){
 			count = 1;
 			$(this).html("(1)次登录中...");
 			//notify('开始尝试登录，请耐心等待！', 4000);
+			  alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
 			submitForm();
 			return false;
 		}));
