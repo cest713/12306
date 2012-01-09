@@ -106,10 +106,12 @@ withjQuery(function($){
 	route("querySingleAction.do", function() {
 
 		//query
+		
 		var isTicketAvailable = false;
 
 		//The table for displaying tickets
 		var tbl = $(".obj")[0];
+		alert("sdfsd");
 		if( tbl.addEventListener ) {
 			// Not work on IE
 			tbl.addEventListener("DOMNodeInserted", function() {
