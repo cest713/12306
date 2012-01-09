@@ -420,6 +420,7 @@ withjQuery(function($){
 	function reSubmitForm(){
 		count ++;
 		$('#refreshButton').html("("+count+")次自动提交中...");
+		alert($$('#refreshButton')).val);
 		setTimeout(submitForm, 500);
 	}
 	function reloadSeat(){
