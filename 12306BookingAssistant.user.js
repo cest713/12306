@@ -440,9 +440,6 @@ withjQuery(function($){
 			    alert('开始自动提交订单，请点确定后耐心等待！');
 				count = 1;
 			    $(this).html("(1)次自动提交中...");
-				if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
-					return;
-				}
 			    submitForm();
 			    return false;
 		    }));
