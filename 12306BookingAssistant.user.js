@@ -378,6 +378,9 @@ withjQuery(function($){
 			var wantDate = $("#startdatepicker").val();
 	          	$("#start_date").val(wantDate);
 	        	$("#_train_date_str").val(wantDate);
+	        	if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+					return;
+				}
 			jQuery.ajax({
 					url: $("#confirmPassenger").attr('action'),
 					data: $('#confirmPassenger').serialize(),
