@@ -407,7 +407,7 @@ withjQuery(function($){
 						};
 						//Parse error message
 						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
-						stop(msg && msg[1] || alert('出错了。。。。 啥错？ 我也不知道。。。。。'));
+						stop(msg && msg[1] || alert("出错了。。。。 啥错？ 我也不知道。。。。。"));
 					},
 					error: function(msg){
 						reSubmitForm();
@@ -437,9 +437,9 @@ withjQuery(function($){
 		
 				count = 1;
 				
-				//if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
-				//	return;
-			//	}
+				if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+					return;
+				}
 			    $(this).html("(1)次自动提交中...");
 			    submitForm();
 			    alert('开始自动提交订单，请点确定后耐心等待！');
