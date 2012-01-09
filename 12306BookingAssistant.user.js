@@ -375,52 +375,46 @@ withjQuery(function($){
 		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
 		var count = 1;
 		function submitForm(){
-			if(window.submit_form_check && !submit_form_check("confirmPassenger") ) {
-				return;
-			}
-			var wantDate = $("#startdatepicker").val();
-	          	$("#start_date").val(wantDate);
-	        	$("#_train_date_str").val(wantDate);
-			jQuery.ajax({
-				url: $("#confirmPassenger").attr('action'),
-				data: $('#confirmPassenger').serialize(),
-				type: "POST",
-				timeout: 30000,
-				success: function(msg)
-				{
-					//Refresh token
-					var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
-					var newToken = match && match[1];
-					if(newToken) {
-						$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
-					}
+		//更改提交列车日期参数
+		var wantDate = $("#startdatepicker").val();
+		$("#start_date").val(wantDate);
+		$("#_train_date_str").val(wantDate);
+		jQuery.ajax({
+					url: $("#confirmPassenger").attr('action'),
+					data: $('#confirmPassenger').serialize(),
+					type: "POST",
+					timeout: 30000,
+					success: function(msg)
+					{
+						//Refresh token
+						var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
+						var newToken = match && match[1];
+						if(newToken) {
+							$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
+						}
 
-					if( msg.indexOf('payButton') > -1 ) {
-						//Success!
-						notify("车票预订成功，恭喜!");
-						window.location.replace(userInfoUrl);
-						return;
-					}
-					var reTryMessage = [
-						'用户过多'
-					  , '确认客票的状态后再尝试后续操作'
-					  ,	'请不要重复提交'
-					];
-					for (var i = reTryMessage.length - 1; i >= 0; i--) {
-						if( msg.indexOf( reTryMessage[i] ) > -1 ) {
-							reSubmitForm();
+						if( msg.indexOf('payButton') > -1 ) {
+							//Success!
+							alert("车票预订成功，恭喜!");
+							window.location.replace(userInfoUrl);
 							return;
 						}
-					};
-					//Parse error message
-					msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
-					stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
-				},
-				error: function(msg){
-					reSubmitForm();
-				}
-			});
-		};
+						var reTryMessage = ['用户过多','确认客票的状态后再尝试后续操作','请不要重复提交'];
+							for (var i = reTryMessage.length - 1; i >= 0; i--) {
+								if( msg.indexOf( reTryMessage[i] ) > -1 ) {
+									reSubmitForm();
+									return;
+							}
+						};
+						//Parse error message
+						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
+						stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
+					},
+					error: function(msg){
+						reSubmitForm();
+					}
+				});
+	};
 		function reSubmitForm(){
 			$('#refreshButton').html("("+count+")次自动提交中...");
 			count ++;
