@@ -407,7 +407,7 @@ withjQuery(function($){
 						};
 						//Parse error message
 						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
-						stop(msg && msg[1] || alert("出错了。。。。 啥错？ 我也不知道。。。。。"));
+						stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
 					},
 					error: function(msg){
 						reSubmitForm();
@@ -423,6 +423,10 @@ withjQuery(function($){
 		$("select[name$='_seat']").html('<option value="M">一等座</option><option value="O">二等座</option><option value="1">硬座</option><option value="3"  selected>硬卧</option><option value="4">软卧</option>');
 	}
 	//初始化
+	function stop ( msg ) {
+			$('#refreshButton').html("自动提交订单");
+			alert( msg );
+		}
     if($("#refreshButton").size()<1){
 			//重置后加载所有席别
 			$("select[name$='_seat']") .each(function(){this.blur(function(){
