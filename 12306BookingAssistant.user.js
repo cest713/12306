@@ -36,6 +36,7 @@
 // @namespace    https://github.com/zzdhidden
 // @description  12306 订票助手之(自动登录，自动查票，自动订单)
 // @include      *://dynamic.12306.cn/otsweb/loginAction.do*
+// @include      *://dynamic.12306.cn/otsweb/login.jsp*
 // @include		 *://dynamic.12306.cn/otsweb/order/querySingleAction.do*
 // @include		 *://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do*
 // @require	https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
@@ -295,7 +296,7 @@ withjQuery(function($){
 			}).appendTo(e);
 		});
 	});
-	route("loginAction.do", function() {
+	route("loginAction.do"||"login.jsp", function() {
 		//login
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
