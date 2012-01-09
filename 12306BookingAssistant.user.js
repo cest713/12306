@@ -413,6 +413,7 @@ withjQuery(function($){
 						stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
 					},
 					error: function(msg){
+						alert(msg);
 						reSubmitForm();
 					}
 				});
