@@ -375,9 +375,6 @@ withjQuery(function($){
 		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
 		var count = 1;
 		function submitForm(){
-			if(window.submit_form_check && !submit_form_check("confirmPassenger") ) {
-				return;
-			}
 			var wantDate = $("#startdatepicker").val();
 	          	$("#start_date").val(wantDate);
 	        	$("#_train_date_str").val(wantDate);
@@ -440,9 +437,9 @@ withjQuery(function($){
 		
 				count = 1;
 				
-				if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
-					return;
-				}
+				//if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+				//	return;
+			//	}
 			    $(this).html("(1)次自动提交中...");
 			    submitForm();
 			    alert('开始自动提交订单，请点确定后耐心等待！');
