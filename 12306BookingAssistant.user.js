@@ -324,7 +324,7 @@ withjQuery(function($){
 				success: function(msg){
 					if (msg.indexOf('请输入正确的验证码') > -1) {
 						alert('请输入正确的验证码！');
-					};
+					} else
 					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
 						reLogin();
 					}
@@ -346,7 +346,7 @@ withjQuery(function($){
 		function reLogin(){
 			count ++;
 			$('#refreshButton').html("("+count+")次登录中...");
-			setTimeout(submitForm, 600);
+			setTimeout(submitForm, 1500);
 		}
 		//初始化
 		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
