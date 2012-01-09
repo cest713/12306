@@ -322,8 +322,7 @@ withjQuery(function($){
 				success: function(msg){
 					if (msg.indexOf('请输入正确的验证码') > -1) {
 						alert('请输入正确的验证码！');
-					};
-					//Fix: Issue #5
+					} else
 					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
 						reLogin();
 					}
@@ -348,16 +347,16 @@ withjQuery(function($){
 			setTimeout(submitForm, 1000);
 		}
 		//初始化
-		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
 			count = 1;
 			$(this).html("(1)次登录中...");
 			//notify('开始尝试登录，请耐心等待！', 4000);
-			  alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+			//  alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
 			submitForm();
 			return false;
 		}));
-
+                $("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
 		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+		
 	});
 	route("confirmPassengerAction.do", function() {
 		/**
