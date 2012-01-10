@@ -435,11 +435,12 @@ withjQuery(function($){
 				});
 	};
 	function showMsg(msg){
-	                  if (count%5==0){
+	                 //每行显示4个
+	                 if (count%5==0){
 	                  	info=info+"</tr><tr>"+"<td width='25%'>第"+count+"次："+msg+"</td>";
 	                  } else
 	                   info=info+"<td width='25%'>第"+count+"次："+msg+"</td>";
-	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr>"+info+"</tr></table>");
+	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr><td>返回信息:</td></tr><tr>"+info+"</tr></table>");
 	                 //$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
 	}
 	function reSubmitForm(){
@@ -459,9 +460,9 @@ withjQuery(function($){
 			clearInterval(t);
 			t = 0;
 			doing=false;
-			count = 0;
-			info="";
+			count = 0;			
 			if(msg!="")alert( msg );
+			info="";
 			$('#msg_div').html("");
 			$('#refreshButton').html("自动提交订单");			
 			$(":button").attr("disabled",false);
