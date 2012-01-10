@@ -432,10 +432,10 @@ withjQuery(function($){
 				});
 	};
 	function showMsg(msg){
-	                  if (count%5==0){
-	                  	info=info+"</tr><tr>"+"<td width='20%'>第"+count+"次："+msg+"</td>";
+	                  if (count%4==0){
+	                  	info=info+"</tr><tr>"+"<td width='25%'>第"+count+"次："+msg+"</td>";
 	                  } else
-	                   info=info+"<td width='20%'>第"+count+"次："+msg+"</td>";
+	                   info=info+"<td width='25%'>第"+count+"次："+msg+"</td>";
 	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr>"+info+"</tr></table>");
 	                 //$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
 	}
