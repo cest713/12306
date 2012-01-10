@@ -374,8 +374,8 @@ withjQuery(function($){
 			$("input._checkbox_class:first").click();
 		}
 		//passengerTickets
-                var userInfoUrl = 'https://dynamic.12306.cn/otsweb/sysuser/user_info.jsp';
-		//var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
+               // var userInfoUrl = 'https://dynamic.12306.cn/otsweb/sysuser/user_info.jsp';
+		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
 		var count = 1;
 		var t;
 	        var doing = false;
@@ -406,7 +406,7 @@ withjQuery(function($){
 							window.location.replace(userInfoUrl);
 							return;
 						}else if(msg.indexOf('未处理的订单') > -1){
-                                                        alert("有未处理的订单!");
+                                                        alert("有未处理的订单,或车票预订成功!");
 							window.location.replace(userInfoUrl);
 							return;
                                                 }
