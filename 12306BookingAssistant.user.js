@@ -426,7 +426,10 @@ withjQuery(function($){
 		setTimeout(submitForm, 500);
 	}
 	function reloadSeat(){
+		var oseat =$("select[name$='_seat']").value;
 		$("select[name$='_seat']").html('<option value="M">一等座</option><option value="O">二等座</option><option value="1">硬座</option><option value="3" selected>硬卧</option><option value="4">软卧</option>');
+                $("select[name$='_seat']").val(oseat);	
+	
 	}
 	//初始化
 	function stop ( msg ) {
