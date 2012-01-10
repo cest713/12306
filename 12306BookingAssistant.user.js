@@ -374,9 +374,11 @@ withjQuery(function($){
 			$("input._checkbox_class:first").click();
 		}
 		//passengerTickets
-
-		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
+                var userInfoUrl = 'https://dynamic.12306.cn/otsweb/sysuser/user_info.jsp';
+		//var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
 		var count = 1;
+		var t;
+	        var doing = false;
 		function submitForm(){
 			var wantDate = $("#startdatepicker").val();
 	          	$("#start_date").val(wantDate);
@@ -403,11 +405,18 @@ withjQuery(function($){
 							alert("车票预订成功，恭喜!");
 							window.location.replace(userInfoUrl);
 							return;
-						}
+						}else if(msg.indexOf('未处理的订单') > -1){
+                                                        alert("有未处理的订单!");
+							window.location.replace(userInfoUrl);
+							return;
+                                                }
 						var reTryMessage = ['用户过多','确认客票的状态后再尝试后续操作','请不要重复提交'];
 							for (var i = reTryMessage.length - 1; i >= 0; i--) {
 								if( msg.indexOf( reTryMessage[i] ) > -1 ) {
-									reSubmitForm();
+									showMsg(reTryMessage[i]);
+									if (doing){
+										reSubmitForm();
+									}
 									return;
 							}
 						};
@@ -416,13 +425,17 @@ withjQuery(function($){
 						stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
 					},
 					error: function(msg){
+						showMsg(msg);
 						reSubmitForm();
 					}
 				});
 	};
+	function showMsg(msg){
+		$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
+	}
 	function reSubmitForm(){
 		count ++;
-		$('#refreshButton').html("("+count+")次自动提交中...");
+		$('#refreshButton').html("("+count+")次自动提交中...单击停止");
 		setTimeout(submitForm, 500);
 	}
 	function reloadSeat(){
@@ -447,22 +460,44 @@ withjQuery(function($){
 			//初始化所有席别
 			$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
 			reloadSeat();
+			$(".conWrap").append("<div id='msg_div'></div>");
 			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
 			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
-		
-				count = 1;
-				
-				if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
-					return;
+		               if (doing == true){
+					clearInterval(t);
+					t = 0;
+					$(this).html("自动提交订单");
+					$('#msg_div').html("");
+					count = 0;
+				}else {
+					if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+						return;
+					}
+					count = 1;
+					$(this).html("(1)次提交中...单击停止");
+					var freq;
+					switch($("#freq").val()){
+						case '0':
+							freq = 500;
+							break;
+						case '1':
+						default:
+							freq = 1000;
+							break;
+						case '2':
+							freq = 2000;
+							break;
+					}
+					t = setInterval(submitForm, freq);
+					//submitForm();
 				}
-			    $(this).html("(1)次自动提交中...");
-			    submitForm();
-			    alert('开始自动提交订单，请点确定后耐心等待！');
+				doing = !doing;
 			    return false;
 		    }));
-			alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
+		alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		}
 	});
 }, true);
