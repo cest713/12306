@@ -223,10 +223,12 @@ withjQuery(function($){
 			}
 		}
 		var highLightRow = function(row) {
-			$(row).css("background-color", "red");
+			//$(row).css("background-color", "red");
+			$(row).css("background-color", "#D1E1F1");
 		}
 		var highLightCell = function(cell) {
-			$(cell).css("background-color", "blue");
+			//$(cell).css("background-color", "blue");
+			$(cell).css("background-color", "#2CC03E");
 		}
 		var displayQueryTimes = function(n) {
 			document.getElementById("refreshTimes").innerText = n;
@@ -457,6 +459,7 @@ withjQuery(function($){
 			t = 0;
 			$('#msg_div').html("");
 			count = 0;
+			info="";
 			$('#refreshButton').html("自动提交订单");
 			alert( msg );			
 			$(":button").attr("disabled",false);
