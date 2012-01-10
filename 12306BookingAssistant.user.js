@@ -379,6 +379,7 @@ withjQuery(function($){
 		var count = 1;
 		var t;
 	        var doing = false;
+	        var info="";
 		function submitForm(){
 			var wantDate = $("#startdatepicker").val();
 	          	$("#start_date").val(wantDate);
@@ -431,7 +432,12 @@ withjQuery(function($){
 				});
 	};
 	function showMsg(msg){
-		$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
+	                  if (count%5==0){
+	                  	info=info+"</tr><tr>"+"<td width='20%'>第"+count+"次："+msg+"</td>";
+	                  } else
+	                   info=info+"<td width='20%'>第"+count+"次："+msg+"</td>";
+	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr>"+info+"</tr></table>");
+	                 //$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
 	}
 	function reSubmitForm(){
 		count ++;
@@ -460,7 +466,8 @@ withjQuery(function($){
 			//初始化所有席别
 			$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
 			reloadSeat();
-			$(".conWrap").append("<div id='msg_div'></div>");
+			//$(".conWrap").append("<div id='msg_div'></div>");		
+			$(".conWrap").append("<table id='msg_div' width='100%'>"+info+"</table>");
 			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
 			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
