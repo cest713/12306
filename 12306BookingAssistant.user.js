@@ -302,6 +302,7 @@ withjQuery(function($){
 	});
 	route("login", function() {
 		//login
+		if(window.location.href.indexOf("initForMy12306") != -1 ) return;
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
 		//Check had login, redirect to query url
