@@ -481,11 +481,7 @@ withjQuery(function($){
 			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 		               if (doing == true){
-					clearInterval(t);
-					t = 0;
-					$(this).html("自动提交订单");
-					$('#msg_div').html("");
-					count = 0;
+					stop();
 				}else {
 					if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
 						return;
