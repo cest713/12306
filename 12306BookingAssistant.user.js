@@ -436,7 +436,7 @@ withjQuery(function($){
 	function reSubmitForm(){
 		count ++;
 		$('#refreshButton').html("("+count+")次自动提交中...单击停止");
-		setTimeout(submitForm, 500);
+		//setTimeout(submitForm, 500);
 	}
 	function reloadSeat(){
 		//默认勾选系统定的席别,将其他的席别变为可用状态，不影响当天预订
