@@ -453,10 +453,15 @@ withjQuery(function($){
 	}
 	//初始化
 	function stop ( msg ) {
+			clearInterval(t);
+			t = 0;
+			$('#msg_div').html("");
+			count = 0;
 			$('#refreshButton').html("自动提交订单");
 			alert( msg );			
 			$(":button").attr("disabled",false);
                 	$(":button").removeClass("long_button_x");
+                	
 		}
     if($("#refreshButton").size()<1){
 			//重置后加载所有席别
