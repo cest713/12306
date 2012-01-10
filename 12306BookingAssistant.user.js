@@ -426,6 +426,7 @@ withjQuery(function($){
 		setTimeout(submitForm, 500);
 	}
 	function reloadSeat(){
+		//默认勾选系统定的席别,将其他的席别变为可用状态，不影响当天预订
 		var oseat =$("select[name$='_seat']").val();
 		$("select[name$='_seat']").html('<option value="M">一等座</option><option value="O">二等座</option><option value="1">硬座</option><option value="3" selected>硬卧</option><option value="4">软卧</option>');
                 $("select[name$='_seat']").val(oseat);	
@@ -446,7 +447,7 @@ withjQuery(function($){
 			//初始化所有席别
 			$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
 			reloadSeat();
-			//日期可选
+			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
 			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
