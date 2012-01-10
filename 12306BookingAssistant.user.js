@@ -434,7 +434,7 @@ withjQuery(function($){
 				});
 	};
 	function showMsg(msg){
-	                  if (count%4==0){
+	                  if (count%5==0){
 	                  	info=info+"</tr><tr>"+"<td width='25%'>第"+count+"次："+msg+"</td>";
 	                  } else
 	                   info=info+"<td width='25%'>第"+count+"次："+msg+"</td>";
@@ -457,12 +457,12 @@ withjQuery(function($){
 	function stop ( msg ) {
 			clearInterval(t);
 			t = 0;
-			$('#msg_div').html("");
+			doing=false;
 			count = 0;
 			info="";
-			doing=false;
-			$('#refreshButton').html("自动提交订单");
-			if(msg!="")alert( msg );			
+			if(msg!="")alert( msg );
+			$('#msg_div').html("");
+			$('#refreshButton').html("自动提交订单");			
 			$(":button").attr("disabled",false);
                 	$(":button").removeClass("long_button_x");
                 	
@@ -510,7 +510,7 @@ withjQuery(function($){
 			    return false;
 		    }));
 		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
-		$(".tj_btn").setfocus();
+		$(".tj_btn").focus();
 		alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		}
 	});
