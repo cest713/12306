@@ -483,6 +483,7 @@ withjQuery(function($){
 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 		               if (doing == true){
 					stop("");
+					return false;
 				}else {
 					if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
 						return;
@@ -509,6 +510,7 @@ withjQuery(function($){
 			    return false;
 		    }));
 		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
+		$(".tj_btn").setfocus();
 		alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		}
 	});
