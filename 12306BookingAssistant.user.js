@@ -335,7 +335,6 @@ withjQuery(function($){
 						return;
 					}
 					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
-					        pararent.html(paranent.html+msg);
 					        reLogin();
 					}
 					else {
