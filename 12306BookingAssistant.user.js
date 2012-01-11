@@ -89,7 +89,8 @@ withjQuery(function($){
 			);
 			notification.show();
 			if ( timeout ) {
-				setTimeout(function() {
+                                alert("heello");
+                                setTimeout(function() {
 					notification.cancel();
 				}, timeout);
 			}
