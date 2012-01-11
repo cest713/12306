@@ -217,9 +217,9 @@ withjQuery(function($){
 					audio.loop = false;
 				}
 				audio.play();
-				notify("可以订票了！", 10000);
+				notify("可以订票了！", 4000);
 			} else {
-				notify("可以订票了！",10000);
+				notify("可以订票了！",4000);
 			}
 		}
 		var highLightRow = function(row) {
@@ -411,6 +411,7 @@ withjQuery(function($){
 						if( msg.indexOf('payButton') > -1 ) {
 							//Success!
 							alert("车票预订成功，恭喜!");
+							notify("车票预订成功，恭喜!",500);
 							window.location.replace(userInfoUrl);
 							return;
 						}else if(msg.indexOf('未处理的订单') > -1){
