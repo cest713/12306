@@ -330,7 +330,8 @@ withjQuery(function($){
 				success: function(msg){
 					if (msg.indexOf('请输入正确的验证码') > -1) {
 						alert('请输入正确的验证码！');
-					} else
+						return;
+					}
 					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
 						reLogin();
 					}
