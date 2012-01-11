@@ -456,7 +456,8 @@ withjQuery(function($){
 	function reloadSeat(){
 		//默认勾选系统定的席别,将其他的席别变为可用状态，不影响当天预订
 		var oseat =$("select[name$='_seat']").val();
-		$("select[name$='_seat']").html('<option value="M">一等座</option><option value="O">二等座</option><option value="1">硬座</option><option value="3" selected>硬卧</option><option value="4">软卧</option>');
+		$("select[name$='_seat']").html('<option value="1">硬座</option><option value="3" selected>硬卧</option><option value="2" selected>软座</option><option value="4">软卧</option><option value="M">一等座</option><option value="O">二等座</option>');
+                $("select[name$='_seat']").html($("select[name$='_seat']").html+'<option value="1">硬座</option><option value="3" selected>硬卧</option><option value="2" selected>软座</option><option value="4">软卧</option><option value="M">一等座</option><option value="O">二等座</option>');
                 $("select[name$='_seat']").val(oseat);	
 	
 	}
