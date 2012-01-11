@@ -335,7 +335,8 @@ withjQuery(function($){
 						return;
 					}
 					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
-						reLogin();
+					        alert(msg);
+					        reLogin();
 					}
 					else {
 						notify("登录成功，开始查询车票吧！", 10000);
