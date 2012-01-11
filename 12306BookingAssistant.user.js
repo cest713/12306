@@ -338,7 +338,7 @@ withjQuery(function($){
 						reLogin();
 					}
 					else {
-						notify('登录成功，开始查询车票吧！', 4000);
+						notify("登录成功，开始查询车票吧！", 4000,false);
 						window.location.replace( queryurl );
 					};
 				},
