@@ -304,12 +304,10 @@ withjQuery(function($){
 		//login
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
-					
-				alert("hello");
 		//Check had login, redirect to query url
 		if( parent && parent.$ ) {
 			var str = parent.$("#username_ a").attr("href");
-			if( str && str.indexOf("sysuser/user_info") != -1&&str.indexof( )){	
+			if( str && str.indexOf("sysuser/user_info") != -1){	
 				//如果是点击的是我的12306,要不跳转
 			        if(window.location.href.indexOf("initForMy12306") != -1 )
 			        return;
