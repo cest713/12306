@@ -217,9 +217,9 @@ withjQuery(function($){
 					audio.loop = false;
 				}
 				audio.play();
-				notify("可以订票了！", 4000);
+				notify("可以订票了！", 10000);
 			} else {
-				notify("可以订票了！",4000);
+				notify("可以订票了！",10000);
 			}
 		}
 		var highLightRow = function(row) {
@@ -338,7 +338,8 @@ withjQuery(function($){
 						reLogin();
 					}
 					else {
-						notify("登录成功，开始查询车票吧！", 4000,false);
+						notify("登录成功，开始查询车票吧！", 10000);
+						//notify("登录成功，开始查询车票吧！", 4000,false);
 						window.location.replace( queryurl );
 					};
 				},
