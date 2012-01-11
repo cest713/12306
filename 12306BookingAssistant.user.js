@@ -214,12 +214,12 @@ withjQuery(function($){
 			if(window.Audio) {
 				if(!audio) {
 					audio = new Audio("http://www.w3school.com.cn/i/song.ogg");
-					audio.loop = true;
+					audio.loop = false;
 				}
 				audio.play();
-				notify("可以订票了！", null, true);
+				notify("可以订票了！", 5000, true);
 			} else {
-				notify("可以订票了！");
+				notify("可以订票了！",5000);
 			}
 		}
 		var highLightRow = function(row) {
@@ -338,7 +338,7 @@ withjQuery(function($){
 						reLogin();
 					}
 					else {
-						notify('登录成功，开始查询车票吧！');
+						notify('登录成功，开始查询车票吧！',5000);
 						window.location.replace( queryurl );
 					};
 				},
