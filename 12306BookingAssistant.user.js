@@ -303,7 +303,8 @@ withjQuery(function($){
 	route("login", function() {
 		//login
 		if(window.location.href.indexOf("initForMy12306") != -1 ) {
-		 if(parent.$("#loginForm")==undefined)alert(parent.$("#loginForm"));
+			alert(parent.$("#loginForm"));
+		 if(parent.$("#loginForm")==null)alert(parent.$("#loginForm"));
 		 return;
 		}
 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
