@@ -476,6 +476,8 @@ withjQuery(function($){
 		}
     if($("#refreshButton").size()<1){
 			//重置后加载所有席别
+			//保存当前席别
+			oseat=$("select[name$='_seat']").val();
 			$("select[name$='_seat']") .each(function(){this.blur(function(){
 				alert(this.attr("id") + "blur");
 			});});
@@ -518,7 +520,6 @@ withjQuery(function($){
 			    return false;
 		    }));
 		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
-	        oseat=$("select[name$='_seat']").val();
 	        alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		$("#rand").focus();
 		
