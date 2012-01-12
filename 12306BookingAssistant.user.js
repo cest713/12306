@@ -441,7 +441,7 @@ withjQuery(function($){
 	};
 	function showMsg(msg){
 	                 //每行显示4个
-	                 if (count%4==1){
+	                 if ((count-4)%4==1){
 	                  	info=info+"</tr><tr>"+"<td width='25%'>第"+count+"次："+msg+"</td>";
 	                  } else
 	                   info=info+"<td width='25%'>第"+count+"次："+msg+"</td>";
