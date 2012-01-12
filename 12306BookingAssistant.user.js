@@ -33,11 +33,11 @@
  */
 
 // ==UserScript==  
-// @name         12306订票助手(基于zzhhidden 1.3)
+// @name         12306订票助手(By 无聊小偶~~)
 // @version	 1.0
 // @author       cest713
 // @namespace    https://github.com/zzdhidden
-// @description  12306 订票助手之(自动登录，自动查票，自动订单)
+// @description  12306 订票助手(自动登录，查票，订单),部分源代码源自github分享，不得作任何商业用途！否则必究!
 // @include      *://dynamic.12306.cn/otsweb/loginAction.do*
 // @include      *://dynamic.12306.cn/otsweb/login*
 // @include	 *://dynamic.12306.cn/otsweb/order/querySingleAction.do*
