@@ -386,7 +386,8 @@ withjQuery(function($){
 		var count = 1;
 		var t;
 	        var doing = false;
-	        var info="";
+	        var info="";	        
+		var oseat;
 		function submitForm(){
 			var wantDate = $("#startdatepicker").val();
 	          	$("#start_date").val(wantDate);
@@ -455,7 +456,6 @@ withjQuery(function($){
 	}
 	function reloadSeat(){
 		//默认勾选系统定的席别,将其他的席别变为可用状态，不影响当天预订
-		var oseat =$("select[name$='_seat']").val();
 		$("select[name$='_seat']").html('<option value="1">硬座</option><option value="3" selected>硬卧</option><option value="2" selected>软座</option><option value="4">软卧</option><option value="M">一等座</option><option value="O">二等座</option><option value="6">高级软卧</option><option value="9" selected>商务座</option><option value="P" selected>特等座</option><option value="Q">观光座</option><option value="S">一等包座</option>');
                 $("select[name$='_seat']").val(oseat);	
 	
@@ -518,6 +518,7 @@ withjQuery(function($){
 			    return false;
 		    }));
 		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
+	        oseat=$("select[name$='_seat']").val();
 	        alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		$("#rand").focus();
 		
