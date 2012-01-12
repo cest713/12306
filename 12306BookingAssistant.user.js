@@ -518,7 +518,9 @@ withjQuery(function($){
 		    }));
 		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
 	        alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+		$("randCode").val('sdff');
 		$("randCode").focus();
+		
 		}
 	});
 }, true);
