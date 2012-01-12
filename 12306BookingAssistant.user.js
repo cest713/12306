@@ -492,10 +492,11 @@ withjQuery(function($){
 					stop("");
 					return false;
 				}else {
+					
+					count = 1;
 					if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
 						return;
 					}
-					count = 1;
 					$(this).html("(1)次提交中...单击停止");
 					var freq;
 					switch($("#freq").val()){
