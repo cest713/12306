@@ -188,12 +188,12 @@ withjQuery(function($, window){
 			if(window.Audio) {
 				if(!audio) {
 					audio = new Audio("http://www.w3school.com.cn/i/song.ogg");
-					audio.loop = true;
+					audio.loop = false;
 				}
 				audio.play();
-				notify("可以订票了！", null, true);
+				notify("可以订票了！", 4000);
 			} else {
-				notify("可以订票了！");
+				notify("可以订票了！", 4000);
 			}
 		}
 		var highLightRow = function(row) {
@@ -286,7 +286,7 @@ withjQuery(function($, window){
 	route("myOrderAction.do?method=resign", query);
 	route("confirmPassengerResignAction.do?method=cancelOrderToQuery", query);
 
-	route("loginAction.do?method=init", function() {
+	route("login", function() {
 		if( !window.location.href.match( /init$/i ) ) {
 			return;
 		}
@@ -297,6 +297,8 @@ withjQuery(function($, window){
 		if( window.parent && window.parent.$ ) {
 			var str = window.parent.$("#username_ a").attr("href");
 			if( str && str.indexOf("sysuser/user_info") != -1 ){
+				if(window.location.href.indexOf("initForMy12306") != -1 )
+			        return;
 				window.location.href = queryurl;
 				return;
 			}
@@ -377,8 +379,8 @@ withjQuery(function($, window){
 
 		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
 
-		var count = 1, freq = 1000, doing = false, timer, $msg = $("<div style='padding-left:470px;'></div>");
-
+		var count = 1, freq = 1000, oseat,doing = false, timer, $msg = $("<div style='padding-left:470px;'></div>");
+                
 		function submitForm(){
 			timer = null;
 			//更改提交列车日期参数
@@ -457,14 +459,25 @@ withjQuery(function($, window){
 			timer = setTimeout( submitForm, freq || 50 );
 		}
 		function stop ( msg ) {
-			doing = false;
+			clearInterval(t);
+			t = 0;
+			doing=false;
+			count = 1;			
+			if(msg!="")alert( msg );
+			info="";
+			$('#msg_div').html("");
+			$('#refreshButton').html("自动提交订单");			
+			$(":button").attr("disabled",false);
+                	$(":button").removeClass("long_button_x");
 			$msg.html("("+count+")次 已停止");
 			$('#refreshButton').html("自动提交订单");
 			timer && clearTimeout( timer );
 			msg && alert( msg );
 		}
 		function reloadSeat(){
-			$("select[name$='_seat']").html('<option value="M" selected="">一等座</option><option value="O" selected="">二等座</option><option value="1">硬座</option><option value="3">硬卧</option><option value="4">软卧</option>');
+		$("select[name$='_seat']").html('<option value="1">硬座</option><option value="3" selected>硬卧</option><option value="2" selected>软座</option><option value="4">软卧</option><option value="M">一等座</option><option value="O">二等座</option><option value="6">高级软卧</option><option value="9" selected>商务座</option><option value="P" selected>特等座</option><option value="Q">观光座</option><option value="S">一等包座</option>');
+                $("select[name$='_seat']").val(oseat);	
+		//	$("select[name$='_seat']").html('<option value="M" selected="">一等座</option><option value="O" selected="">二等座</option><option value="1">硬座</option><option value="3">硬卧</option><option value="4">软卧</option>');
 		}
 		//初始化
 		
@@ -481,7 +494,19 @@ withjQuery(function($, window){
 		//日期可选
 
 			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
-
+                        oseat=$("select[name$='_seat']").val();
+			$("select[name$='_seat']") .each(function(){this.blur(function(){
+				alert(this.attr("id") + "blur");
+			});});
+			//初始化所有席别
+			$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
+			reloadSeat();
+			//$(".conWrap").append("<div id='msg_div'></div>");		
+			$(".conWrap").append("<table id='msg_div' width='100%'>"+info+"</table>");
+			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
+			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+			
 			$(".tj_btn").append($("<a style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'></a>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 				//alert('开始自动提交订单，请点确定后耐心等待！');
 				if( this.innerHTML.indexOf("自动提交订单") == -1 ){
