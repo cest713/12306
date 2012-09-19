@@ -318,7 +318,7 @@ withjQuery(function($){
 
 		function submitForm(){
 			var submitUrl = url;
-			var suggest,logrnd,rnderr;
+			var logrnd,rnderr;
 			$.ajax({
  				type: "POST",
  				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
@@ -331,7 +331,10 @@ withjQuery(function($){
  				//cache: false,
  				//async: false,
  				success: function(msg){
- 					suggest =eval("(" + msg + ")");
+ 					alert(msg);
+ 					var suggest = eval("(" + msg + ")");
+ 					alert(suggest);
+ 					alert(suggest.loginRand);
  					logrnd = suggest.loginRand;
  					rnderr = suugest.randError;
  					alert(logrnd);
