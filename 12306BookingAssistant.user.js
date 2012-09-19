@@ -146,7 +146,7 @@ withjQuery(function($){
    					//alert(logrnd);
    					logerr = suggest.randError;
    			 	        //alert(logerr);
-   			 	        return logrnd;
+   			 	      //  return logrnd;
    				 					
    				},
    				error: function(msg){
@@ -157,12 +157,13 @@ withjQuery(function($){
    				
    				}
    			});
+   			alert("1"+logrnd);
    			return logrnd;
                 }
  		function submitForm(){
  			var submitUrl = url;
  		
- 			var logrnd=presub();
+ 			var logrnd = presub();
  				alert(logrnd);
  			$.ajax({
  				type: "POST",
