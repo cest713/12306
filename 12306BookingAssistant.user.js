@@ -143,7 +143,7 @@ withjQuery(function($){
    					//alert(suggest);
    					//alert(suggest.loginRand);
    					logrnd = suggest.loginRand;
-   					alert(logrnd);
+   					alert("2"+logrnd);
    					logerr = suggest.randError;
    			 	        //alert(logerr);
    			 	      //  return logrnd;
@@ -158,13 +158,12 @@ withjQuery(function($){
    				}
    			});
    			alert("1"+logrnd);
-   			return logrnd;
-                }
+   		                }
  		function submitForm(){
  			var submitUrl = url;
  		
  			var logrnd = presub();
- 				alert(logrnd);
+ 				alert("3"+logrnd);
  			$.ajax({
  				type: "POST",
  				url: submitUrl,
