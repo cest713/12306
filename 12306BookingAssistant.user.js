@@ -144,9 +144,9 @@ withjQuery(function($){
   					//alert(suggest);
   					//alert(suggest.loginRand);
   					logrnd = suggest.loginRand;
-  					//alert(logrnd);
+  					alert(logrnd);
   					logerr = suggest.randError;
-  					//rnderr = suugest.randError.val();
+  			 	        alert(logerr);
   				 					
   				},
   				error: function(msg){
@@ -175,7 +175,7 @@ withjQuery(function($){
  				//cache: false,
  				//async: false,
  				success: function(msg){
- 					alert("sugc:  "+trim(msg));
+ 					alert("sugc:  "+msg);
  					if (msg.indexOf('请输入正确的验证码') > -1) {
  						alert('请输入正确的验证码！');
  						return;
