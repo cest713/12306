@@ -333,7 +333,7 @@ withjQuery(function($){
  				success: function(msg){
  					alert(msg);
  					suggest =msg;
- 					};
+ 					
  				},
  				error: function(msg){
  					//reLogin();
