@@ -124,48 +124,47 @@ withjQuery(function($){
  		};
                 
                 function presub(){
-                       var logrnd;
-  			var logerr;
-  			$.ajax({
-   				type: "POST",
-   				async:false, 
-   				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
-   				data: {
-   				//	"loginUser.user_name": $("#UserName").val()
-   				//  , "user.password": $("#password").val()
-   				//  , "randCode": $("#randCode").val()
-   				},
-   				timeout: 30000,
-   				//cache: false,
-   				//async: false,
-   				success: function(msg){
-   					//alert(msg);
-   					var suggest = eval("(" + msg + ")");
-   					//alert(suggest);
-   					//alert(suggest.loginRand);
-   					logrnd = suggest.loginRand;
-   					alert("2"+logrnd);
-   					logerr = suggest.randError;
-   			 	        //alert(logerr);
-   			 	        return logrnd;
-   				 					
-   				},
-   				error: function(msg){
-   					//reLogin();
-   				},
-   				beforeSend: function(XHR){
-   					//alert("Data Saved: " + XHR);
-   				
-   				}
-   			});
-   			alert("1"+logrnd);
+                       
    		                }
  		function submitForm(){
  			var submitUrl = url;
  		
- 			var logrnd = presub();
- 				alert("3"+logrnd);
- 			$.ajax({
+ 			var logrnd;
+   			var logerr;
+   			$.ajax({
+    				type: "POST",
+    				async:false, 
+    				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
+    				data: {
+    				//	"loginUser.user_name": $("#UserName").val()
+    				//  , "user.password": $("#password").val()
+    				//  , "randCode": $("#randCode").val()
+    				},
+    				timeout: 30000,
+    				//cache: false,
+    				//async: false,
+    				success: function(msg){
+    					//alert(msg);
+    					var suggest = eval("(" + msg + ")");
+    					//alert(suggest);
+    					//alert(suggest.loginRand);
+    					logrnd = suggest.loginRand;
+    					alert("2"+logrnd);
+    					logerr = suggest.randError;
+    			 	        //alert(logerr);
+    			 	        return logrnd;
+    				 					
+    				},
+    				error: function(msg){
+    					//reLogin();
+    				},
+    				beforeSend: function(XHR){
+    					//alert("Data Saved: " + XHR);
+    				
+    				}
+    			});
+    			alert("1"+logrnd);
+    			$.ajax({
  				type: "POST",
  				url: submitUrl,
  				data: {
