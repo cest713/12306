@@ -131,41 +131,36 @@ withjQuery(function($){
  		
  			var logrnd;
    			var logerr;
-   		        $.ajax({
-     				type: "GET",
-     				async:false, 
-     				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
-     				data: {
-     				//	"loginUser.user_name": 
-
-                                 //  $("#UserName").val()
-     				//  , "user.password":  $("#password").val()
-     				//  , "randCode": $("#randCode").val()
-     				},
-     				timeout: 30000,
-     				//cache: false,
-     				//async: false,
-     				success: function(msg){
-     					//alert(msg);
-     					var suggest = eval("(" + msg + ")");
-     					//alert(suggest);
-     					//alert(suggest.loginRand);
-     					logrnd = suggest.loginRand;
-     					//$("#loginRand").val(logrnd);
-     				//	alert($("#loginRand").val());
-     					logerr = suggest.randError;
-     			 	        //alert(logerr);
-     			 	        return logrnd;
-     				 					
-     				},
-     				error: function(msg){
-     					//reLogin();
-     				},
-     				beforeSend: function(XHR){
-     					//alert("Data Saved: " + XHR);
-     				
-     				}
-     			});
+   		        $.ajax(
+ 			  { url :'loginAction.do?method=loginAysnSuggest',
+ 				type :"POST",
+ 				dataType: "json", 
+ 				success:function(data){
+ 					 if(data.randError != 'Y'){
+ 						 refreshImg();
+ 						 alert(data.randError);
+ 						 $("#password").val("");
+ 						 $("#password").focus();
+ 						 $("#randCode").val("");
+ 						 $("#loginRand").val(data.loginRand);
+ 						 return false;
+ 					 } else {
+ 						 $("#loginRand").val(data.loginRand);
+ 						 //subForm();
+ 					 }
+ 				 },
+ 				error:function(XMLHttpRequest, textStatus, errorThrown) {
+ 					 alert("缃戣矾蹇欙紝璇风◢鍚庨噸璇�");
+ 					 return false;
+ 				}
+ 		});
+ 		if($("#UserName").val()!="" && $("#password").val()!="" && $("#randCode").val()!="" && $("#password").val().length>5) {
+ 	 		var form = document.getElementById("loginForm");
+ 	 		if(('undefind' != $("[name='refundLoginCheck']"))&&($("[name='refundLoginCheck']").attr("checked")==true)){
+ 	 			$("#refundLogin").val('Y');
+ 	 		}else{
+ 	 			$("#refundLogin").val('N');
+ 	 		};	 	
      		//	alert("1"+logrnd);
      			alert($("#loginRand").val());
     			$.ajax({
@@ -173,7 +168,7 @@ withjQuery(function($){
  				url: submitUrl,
  				data: {
  					"loginRand":$("#loginRand").val()
- 					,"refundLogin":"N"
+ 					,"refundLogin":$("#refundLogin").val()
  					,"refundFlag":"Y"
  					,"nameErrorFocus":""
  					,"loginUser.user_name": $("#UserName").val()
@@ -181,6 +176,7 @@ withjQuery(function($){
  				  , "passwordErrorFocus":""
  				  ,"randCode": $("#randCode").val()
  				  ,"randErrorFocus":""
+ 				  ,
  				},
  				timeout: 30000,
  				//cache: false,
