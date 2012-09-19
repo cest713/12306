@@ -150,7 +150,7 @@ withjQuery(function($){
  				//cache: false,
  				//async: false,
  				success: function(msg){
- 					alert("sugc:  "+msg);
+ 					//alert("sugc:  "+msg);
  					if (msg.indexOf('请输入正确的验证码') > -1) {
  						alert('请输入正确的验证码！');
  						return;
