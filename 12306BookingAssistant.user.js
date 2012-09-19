@@ -151,8 +151,8 @@ withjQuery(function($){
      					//alert(suggest);
      					//alert(suggest.loginRand);
      					logrnd = suggest.loginRand;
-     					$("#loginRand").val(logrnd);
-     					alert($("#loginRand").val());
+     					//$("#loginRand").val(logrnd);
+     				//	alert($("#loginRand").val());
      					logerr = suggest.randError;
      			 	        //alert(logerr);
      			 	        return logrnd;
@@ -166,7 +166,8 @@ withjQuery(function($){
      				
      				}
      			});
-     			alert("1"+logrnd);
+     		//	alert("1"+logrnd);
+     			alert($("#loginRand").val());
     			$.ajax({
  				type: "POST",
  				url: submitUrl,
