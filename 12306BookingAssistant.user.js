@@ -335,8 +335,8 @@ withjQuery(function($){
  					var suggest = eval("(" + msg + ")");
  					alert(suggest);
  					alert(suggest.loginRand);
- 					logrnd = suggest.loginRand;
- 					rnderr = suugest.randError;
+ 					logrnd = suggest.loginRand.val();
+ 					//rnderr = suugest.randError.val();
  					alert(logrnd);
  					
  				},
