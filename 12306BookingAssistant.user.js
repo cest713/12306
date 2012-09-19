@@ -154,7 +154,7 @@ withjQuery(function($){
   				},
   				beforeSend: function(XHR){
   					//alert("Data Saved: " + XHR);
-  					alert(data);
+  				
   				}
   			});
  			$.ajax({
@@ -175,6 +175,7 @@ withjQuery(function($){
  				//cache: false,
  				//async: false,
  				success: function(msg){
+ 					alert(msg);
  					if (msg.indexOf('请输入正确的验证码') > -1) {
  						alert('请输入正确的验证码！');
  						return;
