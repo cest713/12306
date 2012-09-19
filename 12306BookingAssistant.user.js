@@ -128,6 +128,7 @@ withjQuery(function($){
   			var logerr;
   			$.ajax({
    				type: "POST",
+   				async:false, 
    				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
    				data: {
    				//	"loginUser.user_name": $("#UserName").val()
