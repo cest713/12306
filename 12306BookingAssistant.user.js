@@ -318,6 +318,30 @@ withjQuery(function($){
 
 		function submitForm(){
 			var submitUrl = url;
+			var suggest;
+			$.ajax({
+ 				type: "POST",
+ 				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
+ 				data: {
+ 				//	"loginUser.user_name": $("#UserName").val()
+ 				//  , "user.password": $("#password").val()
+ 				//  , "randCode": $("#randCode").val()
+ 				},
+ 				timeout: 30000,
+ 				//cache: false,
+ 				//async: false,
+ 				success: function(msg){
+ 					alert(msg);
+ 					suggest =msg;
+ 					};
+ 				},
+ 				error: function(msg){
+ 					//reLogin();
+ 				},
+ 				beforeSend: function(XHR){
+ 					//alert("Data Saved: " + XHR);
+ 				}
+ 			});
 			$.ajax({
 				type: "POST",
 				url: submitUrl,
