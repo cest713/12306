@@ -151,7 +151,7 @@ withjQuery(function($){
      					//alert(suggest);
      					//alert(suggest.loginRand);
      					logrnd = suggest.loginRand;
-     					$("#loginRand").val = logrnd;
+     					$("#loginRand").val(logrnd);
      					alert($("#loginRand").val);
      					logerr = suggest.randError;
      			 	        //alert(logerr);
