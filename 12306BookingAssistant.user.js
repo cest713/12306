@@ -131,7 +131,7 @@ withjQuery(function($){
  		
  			var logrnd;
    			var logerr;
-   			$.ajax({
+   		/**	$.ajax({
     				type: "POST",
     				async:false, 
     				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
@@ -163,7 +163,7 @@ withjQuery(function($){
     				
     				}
     			});
-    			alert("1"+logrnd);
+    			alert("1"+logrnd);**/
     			$.ajax({
  				type: "POST",
  				url: submitUrl,
