@@ -126,6 +126,7 @@ withjQuery(function($){
  		function submitForm(){
  			var submitUrl = url;
  			var logrnd;
+ 			var logerr;
  			$.ajax({
   				type: "POST",
   				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
@@ -140,10 +141,11 @@ withjQuery(function($){
   				success: function(msg){
   					alert(msg);
   					var suggest = eval("(" + msg + ")");
-  					alert(suggest);
-  					alert(suggest.loginRand);
+  					//alert(suggest);
+  					//alert(suggest.loginRand);
   					logrnd = suggest.loginRand;
-  					alert(logrnd);
+  					//alert(logrnd);
+  					logerr = suggest.randError;
   					//rnderr = suugest.randError.val();
   				 					
   				},
@@ -158,9 +160,15 @@ withjQuery(function($){
  				type: "POST",
  				url: submitUrl,
  				data: {
- 					"loginUser.user_name": $("#UserName").val()
+ 					"loginRand":logrnd
+ 					,"refundLogin":"N"
+ 					,"refundFlag":"Y"
+ 					,"nameErrorFocus":""
+ 					,"loginUser.user_name": $("#UserName").val()
  				  , "user.password": $("#password").val()
- 				  , "randCode": $("#randCode").val()
+ 				  , "passwordErrorFocus":""
+ 				  ,"randCode": $("#randCode").val()
+ 				  ,"randErrorFocus":""
  				},
  				timeout: 30000,
  				//cache: false,
@@ -180,6 +188,7 @@ withjQuery(function($){
  					};
  				},
  				error: function(msg){
+ 					alert(msg);
  					reLogin();
  				},
  				beforeSend: function(XHR){
