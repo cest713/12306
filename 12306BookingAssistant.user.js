@@ -109,7 +109,7 @@ withjQuery(function($){
 
         route("login", function() {
  		//login
- 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
+ 		var submiturl = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
  		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
  		//Check had login, redirect to query url
  		if( parent && parent.$ ) {
