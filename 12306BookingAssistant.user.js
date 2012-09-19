@@ -107,6 +107,106 @@ withjQuery(function($){
 		};
 	}
 
+        route("login", function() {
+ 		//login
+ 		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
+ 		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
+ 		//Check had login, redirect to query url
+ 		if( parent && parent.$ ) {
+ 			var str = parent.$("#username_ a").attr("href");
+ 			if( str && str.indexOf("sysuser/user_info") != -1){	
+ 				//如果是点击的是我的12306,要不跳转
+ 			        if(window.location.href.indexOf("initForMy12306") != -1 )
+ 			        return;
+ 				window.location.href = queryurl;
+ 				return;
+ 			}
+ 		};
+ 
+ 		function submitForm(){
+ 			var submitUrl = url;
+ 			var logrnd;
+ 			$.ajax({
+  				type: "POST",
+  				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
+  				data: {
+  				//	"loginUser.user_name": $("#UserName").val()
+  				//  , "user.password": $("#password").val()
+  				//  , "randCode": $("#randCode").val()
+  				},
+  				timeout: 30000,
+  				//cache: false,
+  				//async: false,
+  				success: function(msg){
+  					alert(msg);
+  					var suggest = eval("(" + msg + ")");
+  					alert(suggest);
+  					alert(suggest.loginRand);
+  					logrnd = suggest.loginRand;
+  					alert(logrnd);
+  					//rnderr = suugest.randError.val();
+  				 					
+  				},
+  				error: function(msg){
+  					//reLogin();
+  				},
+  				beforeSend: function(XHR){
+  					//alert("Data Saved: " + XHR);
+  				}
+  			});
+ 			$.ajax({
+ 				type: "POST",
+ 				url: submitUrl,
+ 				data: {
+ 					"loginUser.user_name": $("#UserName").val()
+ 				  , "user.password": $("#password").val()
+ 				  , "randCode": $("#randCode").val()
+ 				},
+ 				timeout: 30000,
+ 				//cache: false,
+ 				//async: false,
+ 				success: function(msg){
+ 					if (msg.indexOf('请输入正确的验证码') > -1) {
+ 						alert('请输入正确的验证码！');
+ 						return;
+ 					}
+ 					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
+ 					        reLogin();
+ 					}
+ 					else {
+ 						notify("登录成功，开始查询车票吧！", 10000);
+ 						//notify("登录成功，开始查询车票吧！", 4000,false);
+ 						window.location.replace( queryurl );
+ 					};
+ 				},
+ 				error: function(msg){
+ 					reLogin();
+ 				},
+ 				beforeSend: function(XHR){
+ 					//alert("Data Saved: " + XHR);
+ 				}
+ 			});
+ 		}
+ 
+ 		var count = 1;
+ 		function reLogin(){
+ 			count ++;
+ 			$('#refreshButton').html("("+count+")次登录中...");
+ 			setTimeout(submitForm, 600);
+ 		}
+ 		//初始化
+ 		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
+ 			count = 1;
+ 			$(this).html("(1)次登录中...");
+ 			//notify('开始尝试登录，请耐心等待！', 400);
+ 			  alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+ 			submitForm();
+ 			return false;
+ 		}));
+ 
+ 		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+ 	});
+ 	
 	route("querySingleAction.do", function() {
 
 		//query
@@ -300,105 +400,7 @@ withjQuery(function($){
 			}).appendTo(e);
 		});
 	});
-	route("login", function() {
-		//login
-		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
-		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
-		//Check had login, redirect to query url
-		if( parent && parent.$ ) {
-			var str = parent.$("#username_ a").attr("href");
-			if( str && str.indexOf("sysuser/user_info") != -1){	
-				//如果是点击的是我的12306,要不跳转
-			        if(window.location.href.indexOf("initForMy12306") != -1 )
-			        return;
-				window.location.href = queryurl;
-				return;
-			}
-		};
-
-		function submitForm(){
-			var submitUrl = url;
-			var logrnd,rnderr;
-			$.ajax({
- 				type: "POST",
- 				url: "/otsweb/loginAction.do?method=loginAysnSuggest",
- 				data: {
- 				//	"loginUser.user_name": $("#UserName").val()
- 				//  , "user.password": $("#password").val()
- 				//  , "randCode": $("#randCode").val()
- 				},
- 				timeout: 30000,
- 				//cache: false,
- 				//async: false,
- 				success: function(msg){
- 					alert(msg);
- 					var suggest = eval("(" + msg + ")");
- 					alert(suggest);
- 					alert(suggest.loginRand);
- 					logrnd = suggest.loginRand.val();
- 					//rnderr = suugest.randError.val();
- 					alert(logrnd);
- 					
- 				},
- 				error: function(msg){
- 					//reLogin();
- 				},
- 				beforeSend: function(XHR){
- 					//alert("Data Saved: " + XHR);
- 				}
- 			});
-			$.ajax({
-				type: "POST",
-				url: submitUrl,
-				data: {
-					"loginUser.user_name": $("#UserName").val()
-				  , "user.password": $("#password").val()
-				  , "randCode": $("#randCode").val()
-				},
-				timeout: 30000,
-				//cache: false,
-				//async: false,
-				success: function(msg){
-					if (msg.indexOf('请输入正确的验证码') > -1) {
-						alert('请输入正确的验证码！');
-						return;
-					}
-					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
-					        reLogin();
-					}
-					else {
-						notify("登录成功，开始查询车票吧！", 10000);
-						//notify("登录成功，开始查询车票吧！", 4000,false);
-						window.location.replace( queryurl );
-					};
-				},
-				error: function(msg){
-					reLogin();
-				},
-				beforeSend: function(XHR){
-					//alert("Data Saved: " + XHR);
-				}
-			});
-		}
-
-		var count = 1;
-		function reLogin(){
-			count ++;
-			$('#refreshButton').html("("+count+")次登录中...");
-			setTimeout(submitForm, 600);
-		}
-		//初始化
-		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
-			count = 1;
-			$(this).html("(1)次登录中...");
-			//notify('开始尝试登录，请耐心等待！', 400);
-			  alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
-			submitForm();
-			return false;
-		}));
-
-		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
-	});
+	
 	route("confirmPassengerAction.do", function() {
 		/**
 		 * Auto Submit Order
