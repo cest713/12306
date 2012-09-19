@@ -139,7 +139,7 @@ withjQuery(function($){
   				//cache: false,
   				//async: false,
   				success: function(msg){
-  					alert(msg);
+  					//alert(msg);
   					var suggest = eval("(" + msg + ")");
   					//alert(suggest);
   					//alert(suggest.loginRand);
@@ -154,6 +154,7 @@ withjQuery(function($){
   				},
   				beforeSend: function(XHR){
   					//alert("Data Saved: " + XHR);
+  					alert(data);
   				}
   			});
  			$.ajax({
