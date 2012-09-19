@@ -160,7 +160,8 @@ withjQuery(function($){
  	 			$("#refundLogin").val('Y');
  	 		}else{
  	 			$("#refundLogin").val('N');
- 	 		};	 	
+ 	 		};
+ 		}
      		//	alert("1"+logrnd);
      			alert($("#loginRand").val());
     			$.ajax({
