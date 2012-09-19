@@ -146,7 +146,7 @@ withjQuery(function($){
    					alert("2"+logrnd);
    					logerr = suggest.randError;
    			 	        //alert(logerr);
-   			 	      //  return logrnd;
+   			 	        return logrnd;
    				 					
    				},
    				error: function(msg){
