@@ -152,7 +152,7 @@ withjQuery(function($){
      					//alert(suggest.loginRand);
      					logrnd = suggest.loginRand;
      					$("#loginRand").val(logrnd);
-     					alert($("#loginRand").val);
+     					alert($("#loginRand").val());
      					logerr = suggest.randError;
      			 	        //alert(logerr);
      			 	        return logrnd;
