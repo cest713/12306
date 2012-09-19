@@ -175,7 +175,7 @@ withjQuery(function($){
  				//cache: false,
  				//async: false,
  				success: function(msg){
- 					alert(msg);
+ 					alert("sugc:  "+msg);
  					if (msg.indexOf('请输入正确的验证码') > -1) {
  						alert('请输入正确的验证码！');
  						return;
@@ -190,7 +190,7 @@ withjQuery(function($){
  					};
  				},
  				error: function(msg){
- 					alert(msg);
+ 					alert("fal:  "+msg);
  					reLogin();
  				},
  				beforeSend: function(XHR){
