@@ -168,7 +168,7 @@ withjQuery(function($){
  				type: "POST",
  				url: submitUrl,
  				data: {
- 					"loginRand":logrnd
+ 					"loginRand":$("#loginRand").val()
  					,"refundLogin":"N"
  					,"refundFlag":"Y"
  					,"nameErrorFocus":""
