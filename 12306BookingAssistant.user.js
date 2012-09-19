@@ -135,6 +135,7 @@ withjQuery(function($){
  			  { url :'loginAction.do?method=loginAysnSuggest',
  				type :"POST",
  				dataType: "json", 
+ 				async: false,
  				success:function(data){
  					 if(data.randError != 'Y'){
  						 refreshImg();
