@@ -439,52 +439,41 @@ withjQuery(function($){
 	        var doing = false;
 	        var info="";	        
 		var oseat;
-		function submitForm(){
+		var submiturl;
+		var geturl;
+		var tourFlag;
+		function submitForm(tourFlag){
 			var wantDate = $("#startdatepicker").val();
 	          	$("#start_date").val(wantDate);
 	        	$("#_train_date_str").val(wantDate);
 	        	if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
 					return;
 				}
+		   
 			jQuery.ajax({
-					url: $("#confirmPassenger").attr('action'),
-					data: $('#confirmPassenger').serialize(),
-					type: "POST",
+				        url: 'myOrderAction.do?method=getOrderWaitTime',
+				        data: data:{tourFlag : t.tourFlag,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+					type: "GET",
 					timeout: 30000,
 					success: function(msg)
 					{
 						//Refresh token
-						var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
-						var newToken = match && match[1];
-						if(newToken) {
-							$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
-						}
-
-						if( msg.indexOf('payButton') > -1 ) {
+						//var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
+						//var newToken = match && match[1];
+						//if(newToken) {
+						//	$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
+						//}
+                                                  
+						if( msg.waitTime<=0 ) {
 							//Success!
 							alert("车票预订成功，恭喜!");
 							notify("车票预订成功，恭喜!",500);
 							window.location.replace(userInfoUrl);
 							return;
-						}else if(msg.indexOf('未处理的订单') > -1){
-                                                        alert("有未处理的订单,或车票预订成功!");
-							window.location.replace(userInfoUrl);
-							return;
-                                                }
-						var reTryMessage = ['用户过多','确认客票的状态后再尝试后续操作','请不要重复提交'];
-							for (var i = reTryMessage.length - 1; i >= 0; i--) {
-								if( msg.indexOf( reTryMessage[i] ) > -1 ) {
-									showMsg(reTryMessage[i]);
-									if (doing){
-										reSubmitForm();
-									}
-									return;
-							}
-						};
-						//Parse error message
-						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
-						stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
-					},
+						}else {
+						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
+						}
+					}
 					error: function(msg){
 						showMsg(msg+'34');
 						reSubmitForm();
@@ -497,7 +486,7 @@ withjQuery(function($){
 	                  	info=info+"</tr><tr>"+"<td width='25%'>第"+count+"次："+msg+"</td>";
 	                  } else
 	                   info=info+"<td width='25%'>第"+count+"次："+msg+"</td>";
-	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr><td>返回信息:</td></tr><tr>"+info+"</tr></table>");
+	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr><td>信息:</td></tr><tr>"+info+"</tr></table>");
 	                 //$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
 	}
 	function reSubmitForm(){
@@ -564,12 +553,62 @@ withjQuery(function($){
 							freq = 2000;
 							break;
 					}
-					t = setInterval(submitForm, freq);
+					//给tourFlag赋值
+					tourFlag = "dc";
+					$.ajax({ 
+ 				        url :'confirmPassengerAction.do?method=getQueueCount',
+  					type :"GET",
+  					data:{train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val(),ticket:$("#left_ticket").val()},
+  					dataType: "json", 
+  					error: function(msg){
+  						showMsg(msg+'34');
+  					}
+  					success:function(data){
+  						if(data.op_2){
+  							alert("排队太多，放弃吧!");
+  						}else{
+  						    if(tourFlag=='dc'){
+  							//异步下单-单程
+  	         				      geturl='confirmPassengerAction.do?method=confirmSingleForQueueOrder';
+                  				    }else if(tourFlag=='wc'){
+  						    //异步下单-往程
+  		    				      geturl='confirmPassengerAction.do?method=confirmPassengerInfoGoForQueue';
+  	          				    }else if(tourFlag=='fc'){
+  					   		//异步下单-返程
+  		        			      geturl='confirmPassengerAction.do?method=confirmPassengerInfoBackForQueue';
+  	          				    }else if(tourFlag=='gc'){
+  							//异步下单-改签
+  		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
+  	          				    }	
+  						$.ajax({ 
+  				                      url :geturl,
+   					              type :"POST",
+   				                      data: $('#confirmPassenger').serialize(),
+   						      dataType: "json", 
+    						      success:function(data){
+ 		                          	             if(data.errMsg != 'Y'){
+ 		                          	             	alert(data.errMsg)
+ 		                          	             }else{
+ 		                          	             	t = setInterval(submitForm, freq);
+  				         		        doing = !doing;
+ 		                          	             }
+    						      },
+    						      error:{
+    						      	alert("下单失败，网络繁忙");
+    						      	return false;
+    						      }
+    						      )
+ 		                          	            
+ 				         	
+   						})
+   					     }
+ 					})
+  					})
 					//submitForm();
 				}
-				doing = !doing;
-			    return false;
-		    }));
+			
+			    
+		    }
 		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
 	        alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
 		$("#rand").focus();
