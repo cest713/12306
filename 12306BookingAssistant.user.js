@@ -555,13 +555,12 @@
  					//tourFlag = "dc";
 
  					//submitForm();
- 			     jQuery.ajax({ 
+ 			     $.ajax({ 
    				  url :'confirmPassengerAction.do?method=getQueueCount',
     					type :"GET",
-  		     data: function(){
-         alert({tourFlag : "dc",train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()})
-         },
-    					dataType: "json", 
+         dataType: "json", 
+  		     data: {tourFlag : "dc",train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()}         ,
+
     					success:function(data){
     						if(data.op_2){
     							alert("排队人数"+data.count+"人大于余票"+data.ticket+"张，放弃吧!");
@@ -579,7 +578,7 @@
     							//异步下单-改签
     		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
     	          				    }	
-    						jQuery.ajax({ 
+    						$.ajax({ 
     				                      url :geturl,
      					              type :"POST",
      				                      data: $('#confirmPassenger').serialize(),
