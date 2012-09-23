@@ -599,7 +599,7 @@
       						      success:function(data){
    		             if(data.errMsg != 'Y'){
    		             alert(data.errMsg);
-                  if data.errmsg.match(/验证码/){
+                  if (data.errmsg).indeof('验证码')<0){
                       refreshImg();
                        $("#rand").val('');
                       $("#rand").focus();
