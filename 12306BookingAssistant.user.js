@@ -449,9 +449,9 @@
  					return;
  				}
   	   		jQuery.ajax({
-  				        url: 'myOrderAction.do?method=getOrderWaitTime',
-  				         data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
-  					type: "GET",
+  				  url: 'myOrderAction.do?method=getOrderWaitTime',
+ 	      data:{tourFlag : "dc",train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+   					type: "GET",
   					timeout: 30000,
   					success: function(msg)
   					{
@@ -462,15 +462,21 @@
   						//	$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
   						//}
                                                     
-  						if( msg.waitTime<=0 ) {
+  						if(data != null){
+   					   if( msg.waitTime<=0 ) {
   							//Success!
-  							alert("车票预订成功，恭喜!");
-  							notify("车票预订成功，恭喜!",500);
-  							window.location.replace(userInfoUrl);
-  							return;
-  						}else {
+  							   alert("车票预订成功，恭喜!");
+  							   notify("车票预订成功，恭喜!",500);
+  							   window.location.replace(userInfoUrl);
+  							   return;
+  						 }else {
   						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
   						}
+  						} else{
+   					 alert("提交数据错误，无法订票！")；
+        
+  						}
+       
   					},
   					error: function(msg){
   						showMsg(msg+'34');
@@ -580,16 +586,16 @@
     		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
     	          				    }	
     						$.ajax({ 
-    				                      url :geturl,
-     					              type :"POST",
-     				                      data: $('#confirmPassenger').serialize(),
+    				         url :geturl,
+     					       type :"POST",
+     				        data: $('#confirmPassenger').serialize(),
      						      dataType: "json", 
       						      success:function(data){
-   		                          	             if(data.errMsg != 'Y'){
-   		                          	             	alert(data.errMsg)
-   		                          	             }else{
-   		                          	             	t = setInterval(submitForm, freq);
-    				         		        doing = !doing;
+   		             if(data.errMsg != 'Y'){
+   		             alert(data.errMsg)
+   		             }else{
+   		             t = setInterval(submitForm, freq);
+    				         	doing = !doing;
    		                          	             }
       						      },
       						      error:function(){
