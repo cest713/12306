@@ -483,7 +483,7 @@
        
   					},
   					error: function(msg){
-  						showMsg("错误:"msg);
+  						showMsg("错误:"+msg);
   						reSubmitForm();
   					}
   				}); 
@@ -598,7 +598,7 @@
       						      success:function(data){
    		             if(data.errMsg != 'Y'){
    		             alert(data.errMsg);
-                  //refreshImg();
+                  refreshImg();
    		             }else{
    		             t = setInterval(submitForm, freq);
     				         	doing = !doing;
