@@ -599,9 +599,9 @@
       						      success:function(data){
    		             if(data.errMsg != 'Y'){
    		             alert(data.errMsg);
-                  if (data.errmsg.indeof('验证码')<0){
+                  if (data.errmsg.indeof('验证码')>0){
                       refreshImg();
-                       $("#rand").val('');
+                       $("#rand").val("");
                       $("#rand").focus();
                   }
    		             }else{
