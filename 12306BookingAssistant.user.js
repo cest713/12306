@@ -39,496 +39,594 @@
 // @require	https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
 // ==/UserScript== 
 
-function withjQuery(callback, safe){
-	if(typeof(jQuery) == "undefined") {
-		var script = document.createElement("script");
-		script.type = "text/javascript";
-		script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js";
-
-		if(safe) {
-			var cb = document.createElement("script");
-			cb.type = "text/javascript";
-			cb.textContent = "jQuery.noConflict();(" + callback.toString() + ")(jQuery, window);";
-			script.addEventListener('load', function() {
-				document.head.appendChild(cb);
-			});
-		}
-		else {
-			var dollar = undefined;
-			if(typeof($) != "undefined") dollar = $;
-			script.addEventListener('load', function() {
-				jQuery.noConflict();
-				$ = dollar;
-				callback(jQuery, window);
-			});
-		}
-		document.head.appendChild(script);
-	} else {
-		setTimeout(function() {
-			//Firefox supports
-			callback(jQuery, typeof unsafeWindow === "undefined" ? window : unsafeWindow);
-		}, 30);
-	}
-}
-
-withjQuery(function($, window){
-	$(document).click(function() {
-		if( window.webkitNotifications && window.webkitNotifications.checkPermission() != 0 ) {
-			window.webkitNotifications.requestPermission();
-		}
-	});
-	function notify(str, timeout, skipAlert) {
-		if( window.webkitNotifications && window.webkitNotifications.checkPermission() == 0 ) {
-			var notification = webkitNotifications.createNotification(
-				"http://www.12306.cn/mormhweb/images/favicon.ico",  // icon url - can be relative
-				'订票',  // notification title
-				str
-			);
-			notification.show();
-			if ( timeout ) {
-				setTimeout(function() {
-					notification.cancel();
-				}, timeout);
-			}
-			return true;
-		} else {
-			if( !skipAlert ) {
-				alert( str );
-			}
-			return false;
-		}
-	}
-	function route(match, fn) {
-		if( window.location.href.indexOf(match) != -1 ) {
-			fn();
-		};
-	}
-
-
-	function query() {
-
-		//query
-		var isTicketAvailable = false;
-
-		var firstRemove = false;
-
-		window.$ && window.$(".obj:first").ajaxComplete(function() {
-			$(this).find("tr").each(function(n, e) {
-				if(checkTickets(e)){
-					isTicketAvailable = true;
-					highLightRow(e);
-				}	
-			});
-			if(firstRemove) {
-				firstRemove = false;
-				if (isTicketAvailable) {
-					if (isAutoQueryEnabled)
-						document.getElementById("refreshButton").click();
-					onticketAvailable(); //report
-				}
-				else {
-					//wait for the button to become valid
-				}
-			}
-		}).ajaxError(function() {
-			if(isAutoQueryEnabled) doQuery();
-		});
-
-		//hack into the validQueryButton function to detect query
-		var _delayButton = window.delayButton;
-
-		window.delayButton = function() {
-			_delayButton();
-			if(isAutoQueryEnabled) doQuery();
-		}
-
-		//Trigger the button
-		var doQuery = function() {
-			displayQueryTimes(queryTimes++);
-			firstRemove = true;
-			document.getElementById(isStudentTicket ? "stu_submitQuery" : "submitQuery").click();
-		}
-
-		var $special = $("<input type='text' />")
-		var checkTickets = function(row) {
-			var hasTicket = false;
-			var v1 = $special.val();
-			if( v1 ) {
-				var v2 = $.trim( $(row).find(".base_txtdiv").text() );
-				if( v1.indexOf( v2 ) == -1 ) {
-					return false;
-				}
-			}
-
-			if( $(row).find("td input.yuding_x[type=button]").length ) {
-				return false;
-			}
-
-			$("td", row).each(function(i, e) {
-				if(ticketType[i-1]) {
-					var info = $.trim($(e).text());
-					if(info != "--" && info != "无") {
-						hasTicket = true;
-						highLightCell(e);
-					}
-				}
-			});
-
-			return hasTicket;
-		}
-
-
-		var queryTimes = 0; //counter
-		var isAutoQueryEnabled = false; //enable flag
-
-		//please DIY:
-		var audio = null;
-
-		var onticketAvailable = function() {
-			if(window.Audio) {
-				if(!audio) {
-					audio = new Audio("http://www.w3school.com.cn/i/song.ogg");
-					audio.loop = false;
-				}
-				audio.play();
-				notify("可以订票了！", 4000);
-			} else {
-				notify("可以订票了！", 4000);
-			}
-		}
-		var highLightRow = function(row) {
-			$(row).css("background-color", "#D1E1F1");
-		}
-		var highLightCell = function(cell) {
-			$(cell).css("background-color", "#2CC03E");
-		}
-		var displayQueryTimes = function(n) {
-			document.getElementById("refreshTimes").innerHTML = n;
-		};
-
-		var isStudentTicket = false;
-
-		//Control panel UI
-		var ui = $("<div>请先选择好出发地，目的地，和出发时间。&nbsp;&nbsp;&nbsp;</div>")
-			.append(
-				$("<input id='isStudentTicket' type='checkbox' />").change(function(){
-					isStudentTicket = this.checked;
-				})
-			)
-			.append(
-				$("<label for='isStudentTicket'></label>").html("学生票&nbsp;&nbsp;")
-			)
-			.append(
-				$("<button style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("开始刷票").click(function() {
-					if(!isAutoQueryEnabled) {
-						isTicketAvailable = false;
-						if(audio && !audio.paused) audio.pause();
-						isAutoQueryEnabled = true;
-						doQuery();
-						this.innerHTML="停止刷票";
-					}
-					else {
-						isAutoQueryEnabled = false;
-						this.innerHTML="开始刷票";
-					}
-				})
-			)
-			.append(
-				$("<span>").html("&nbsp;&nbsp;尝试次数：").append(
-					$("<span/>").attr("id", "refreshTimes").text("0")
-				)
-			)
-			.append( 
-				//Custom ticket type
-				$("<div>如果只需要刷特定的票种，请在余票信息下面勾选。</div>")
-					.append($("<a href='#' style='color: blue;'>只勾选坐票&nbsp;&nbsp;</a>").click(function() {
-						$(".hdr tr:eq(2) td").each(function(i,e) {
-							var val = this.innerHTML.indexOf("座") != -1;
-							var el = $(this).find("input").attr("checked", val);
-							el && el[0] && ( ticketType[el[0].ticketTypeId] = val );
-						});
-						return false;
-					}))
-					.append($("<a href='#' style='color: blue;'>只勾选卧铺&nbsp;&nbsp;</a>").click(function() {
-						$(".hdr tr:eq(2) td").each(function(i,e) {
-							var val = this.innerHTML.indexOf("卧") != -1;
-							var el = $(this).find("input").attr("checked", val);
-							el && el[0] && ( ticketType[el[0].ticketTypeId] = val );
-						});
-						return false;
-					}))
-			)
-			.append( 
-				$("<div>限定出发车次：</div>")
-					.append( $special )
-					.append( "不限制不填写，限定多次用逗号分割,例如: G32,G34" )
-			);
-		var container = $(".cx_title_w:first");
-		container.length ?
-			ui.insertBefore(container) : ui.appendTo(document.body);
-
-		//Ticket type selector & UI
-		var ticketType = new Array();
-		$(".hdr tr:eq(2) td").each(function(i,e) {
-			ticketType.push(false);
-			if(i<3) return;
-			ticketType[i] = true;
-
-			var c = $("<input/>").attr("type", "checkBox").attr("checked", true);
-			c[0].ticketTypeId = i;
-			c.change(function() {
-				ticketType[this.ticketTypeId] = this.checked;
-			}).appendTo(e);
-		});
-	}
-
-	route("querySingleAction.do", query);
-	route("myOrderAction.do?method=resign", query);
-	route("confirmPassengerResignAction.do?method=cancelOrderToQuery", query);
-
-	route("login", function() {
-		if( !window.location.href.match( /init$/i ) ) {
-			return;
-		}
-		//login
-		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
-		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
-		//Check had login, redirect to query url
-		if( window.parent && window.parent.$ ) {
-			var str = window.parent.$("#username_ a").attr("href");
-			if( str && str.indexOf("sysuser/user_info") != -1 ){
-				if(window.location.href.indexOf("initForMy12306") != -1 )
-			        return;
-				window.location.href = queryurl;
-				return;
-			}
-		}
-
-		function submitForm(){
-			var submitUrl = url;
-			$.ajax({
-				type: "POST",
-				url: submitUrl,
-				data: {
-					"loginUser.user_name": $("#UserName").val()
-				  , "user.password": $("#password").val()
-				  , "randCode": $("#randCode").val()
-				},
-				beforeSend: function( xhr ) {
-					try{
-						xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
-						xhr.setRequestHeader('Cache-Control', 'max-age=0');
-						xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
-					}catch(e){};
-				},
-				timeout: 30000,
-				//cache: false,
-				//async: false,
-				success: function(msg){
-					//密码输入错误
-					//您的用户已经被锁定
-					if ( msg.indexOf('请输入正确的验证码') > -1 ) {
-						alert('请输入正确的验证码！');
-					} else if ( msg.indexOf('当前访问用户过多') > -1 ){
-						reLogin();
-					} else if( msg.match(/var\s+isLogin\s*=\s*true/i) ) {
-						notify('登录成功，开始查询车票吧！');
-						window.location.replace( queryurl );
-					} else {
-						msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
-						alert( msg && msg[1] || "未知错误" );
-					}
-				},
-				error: function(msg){
-					reLogin();
-				}
-			});
-		}
-
-		var count = 1;
-		function reLogin(){
-			count ++;
-			$('#refreshButton').html("("+count+")次登录中...");
-			setTimeout(submitForm, 50);
-		}
-		//初始化
-		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
-			count = 1;
-			$(this).html("(1)次登录中...");
-			//notify('开始尝试登录，请耐心等待！', 4000);
-			submitForm();
-			return false;
-		}));
-
-		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
-	});
-	route("confirmPassengerAction.do", function() {
-		/**
-		 * Auto Submit Order
-		 * From: https://gist.github.com/1577671
-		 * Author: kevintop@gmail.com  
-		 */
-		//Auto select the first user when not selected
-		if( !$("input._checkbox_class:checked").length ) {
-			try{
-				//Will failed in IE
-				$("input._checkbox_class:first").click();
-			}catch(e){};
-		}
-		//passengerTickets
-
-		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
-
-		var count = 1, freq = 1000, oseat,doing = false, timer, $msg = $("<div style='padding-left:470px;'></div>");
-                
-		function submitForm(){
-			timer = null;
-			//更改提交列车日期参数
-			//var wantDate = $("#startdatepicker").val();
-			//$("#start_date").val(wantDate);
-			//$("#_train_date_str").val(wantDate);
-
-			jQuery.ajax({
-				url: $("#confirmPassenger").attr('action'),
-				data: $('#confirmPassenger').serialize(),
-				beforeSend: function( xhr ) {
-					try{
-						xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }});
-						xhr.setRequestHeader('Cache-Control', 'max-age=0');
-						xhr.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
-					}catch(e){};
-				},
-				type: "POST",
-				timeout: 30000,
-				success: function( msg )
-				{
-					//Refresh token
-					var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
-					var newToken = match && match[1];
-					if(newToken) {
-						$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
-					}
-
-					if( msg.indexOf('payButton') > -1 ) {
-						//Success!
-						var audio;
-						if( window.Audio ) {
-							audio = new Audio("http://www.w3school.com.cn/i/song.ogg");
-							audio.loop = true;
-							audio.play();
-						}
-						notify("恭喜，车票预订成！", null, true);
-						setTimeout(function() {
-							if( confirm("车票预订成，去付款？") ){
-								window.location.replace(userInfoUrl);
-							} else {
-								if(audio && !audio.paused) audio.pause();
-							}
-						}, 100);
-						return;
-					}else if(msg.indexOf('未处理的订单') > -1){
-						notify("有未处理的订单!");
-						window.location.replace(userInfoUrl);
-						return;
-					}
-					var reTryMessage = [
-						'用户过多'
-					  , '确认客票的状态后再尝试后续操作'
-					  ,	'请不要重复提交'
-					  , '没有足够的票!'
-					];
-					for (var i = reTryMessage.length - 1; i >= 0; i--) {
-						if( msg.indexOf( reTryMessage[i] ) > -1 ) {
-							reSubmitForm( reTryMessage[i] );
-							return;
-						}
-					};
-					//Parse error message
-					msg = msg.match(/var\s+message\s*=\s*"([^"]*)/);
-					stop(msg && msg[1] || '出错了。。。。 啥错？ 我也不知道。。。。。');
-				},
-				error: function(msg){
-					reSubmitForm("网络错误");
-				}
-			});
-		};
-		function reSubmitForm(msg){
-			if( !doing )return;
-			count ++;
-			$msg.html("("+count+")次自动提交中... " + (msg || ""));
-			timer = setTimeout( submitForm, freq || 50 );
-		}
-		function stop ( msg ) {
-			clearInterval(t);
-			t = 0;
-			doing=false;
-			count = 1;			
-			if(msg!="")alert( msg );
-			info="";
-			$('#msg_div').html("");
-			$('#refreshButton').html("自动提交订单");			
-			$(":button").attr("disabled",false);
-                	$(":button").removeClass("long_button_x");
-			$msg.html("("+count+")次 已停止");
-			$('#refreshButton').html("自动提交订单");
-			timer && clearTimeout( timer );
-			msg && alert( msg );
-		}
-		function reloadSeat(){
-		$("select[name$='_seat']").html('<option value="1">硬座</option><option value="3" selected>硬卧</option><option value="2" selected>软座</option><option value="4">软卧</option><option value="M">一等座</option><option value="O">二等座</option><option value="6">高级软卧</option><option value="9" selected>商务座</option><option value="P" selected>特等座</option><option value="Q">观光座</option><option value="S">一等包座</option>');
-                $("select[name$='_seat']").val(oseat);	
-		//	$("select[name$='_seat']").html('<option value="M" selected="">一等座</option><option value="O" selected="">二等座</option><option value="1">硬座</option><option value="3">硬卧</option><option value="4">软卧</option>');
-		}
-		//初始化
-		
-		if($("#refreshButton").size()<1){
-
-		//	//重置后加载所有席别
-		//	$("select[name$='_seat']").each(function(){this.blur(function(){
-		//		alert(this.attr("id") + "blur");
-		//	})});
-		////初始化所有席别
-		//$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
-		//reloadSeat();
-
-		//日期可选
-
-			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
-                        oseat=$("select[name$='_seat']").val();
-			$("select[name$='_seat']") .each(function(){this.blur(function(){
-				alert(this.attr("id") + "blur");
-			});});
-			//初始化所有席别
-			$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
-			reloadSeat();
-			//$(".conWrap").append("<div id='msg_div'></div>");		
-			$(".conWrap").append("<table id='msg_div' width='100%'>"+info+"</table>");
-			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
-			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
-			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
-			
-			$(".tj_btn").append($("<a style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'></a>").attr("id", "refreshButton").html("自动提交订单").click(function() {
-				//alert('开始自动提交订单，请点确定后耐心等待！');
-				if( this.innerHTML.indexOf("自动提交订单") == -1 ){
-					//doing
-					stop();
-				} else {
-					if( window.submit_form_check && !window.submit_form_check("confirmPassenger") ) {
-						return;
-					}
-					count = 0;
-					doing = true;
-					this.innerHTML = "停止自动提交";
-					reSubmitForm();
-				}
-				return false;
-			}));
-			$(".tj_btn").append("自动提交频率：")
-				.append($("<select id='freq'><option value='50' >频繁</option><option value='500' selected='' >正常</option><option value='2000' >缓慢</option></select>").change(function() {
-					freq = parseInt( $(this).val() );
-				}))
-				.append($msg);
-			//alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
-		}
-	});
-}, true);
+  function withjQuery(callback, safe){
+    if(typeof(jQuery) == "undefined") {
+   		var script = document.createElement("script");
+   		script.type = "text/javascript";
+   		script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js";
+   
+   		if(safe) {
+   			var cb = document.createElement("script");
+   			cb.type = "text/javascript";
+   			cb.textContent = "jQuery.noConflict();(" + callback.toString() + ")(jQuery);";
+   			script.addEventListener('load', function() {
+   				document.head.appendChild(cb);
+   			});
+   		}
+   		else {
+   			var dollar = undefined;
+   			if(typeof($) != "undefined") dollar = $;
+   			script.addEventListener('load', function() {
+   				jQuery.noConflict();
+   				$ = dollar;
+   				callback(jQuery);
+   			});
+   		}
+   		document.head.appendChild(script);
+   	} else {
+   		callback(jQuery);
+   	}
+   }
+   withjQuery(function($){
+   	$(document).click(function() {
+   		if( window.webkitNotifications && window.webkitNotifications.checkPermission() != 0 ) {
+   			window.webkitNotifications.requestPermission();
+   		}
+   	});
+   	function notify(str, timeout, skipAlert) {
+   		if( window.webkitNotifications && window.webkitNotifications.checkPermission() == 0 ) {
+   			var notification = webkitNotifications.createNotification(
+   				null,  // icon url - can be relative
+   				'订票助手',  // notification title
+   				str
+   			);
+   			notification.show();
+   			if ( timeout ) {
+                                   setTimeout(function() {
+   					notification.cancel();
+   				}, timeout);
+   			}
+   			return true;
+   		} else {
+   			if( !skipAlert ) {
+   				alert( str );
+   			}
+   			return false;
+   		}
+   	}
+   	function route(match, fn) {
+   		if( window.location.href.indexOf(match) != -1 ) {
+   			fn();
+   		};
+   	}
+   
+           route("login", function() {
+    		//login
+    		var url = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
+    		var queryurl = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
+    		//Check had login, redirect to query url
+    		if( parent && parent.$ ) {
+    			var str = parent.$("#username_ a").attr("href");
+    			if( str && str.indexOf("sysuser/user_info") != -1){	
+    				//如果是点击的是我的12306,要不跳转
+    			        if(window.location.href.indexOf("initForMy12306") != -1 )
+    			        return;
+    				window.location.href = queryurl;
+    				return;
+    			}
+    		};
+                   
+                   function presub(){
+                          
+      		                }
+    		function submitForm(){
+    			var submitUrl = url;
+    		
+    			var logrnd;
+      			var logerr;
+      		        $.ajax(
+    			  { url :'loginAction.do?method=loginAysnSuggest',
+    				type :"POST",
+    				dataType: "json", 
+    				async: false,
+    				success:function(data){
+    					 if(data.randError != 'Y'){
+    						 refreshImg();
+    						 alert(data.randError);
+    						 $("#password").val("");
+    						 $("#password").focus();
+    						 $("#randCode").val("");
+    						 $("#loginRand").val(data.loginRand);
+    						 return false;
+    					 } else {
+    						 $("#loginRand").val(data.loginRand);
+    						 //subForm();
+    					 }
+    				 },
+    				error:function(XMLHttpRequest, textStatus, errorThrown) {
+    					 alert("错误!");
+    					 return false;
+    				}
+    		});
+    		if($("#UserName").val()!="" && $("#password").val()!="" && $("#randCode").val()!="" && $("#password").val().length>5) {
+    	 		var form = document.getElementById("loginForm");
+    	 		if(('undefind' != $("[name='refundLoginCheck']"))&&($("[name='refundLoginCheck']").attr("checked")==true)){
+    	 			$("#refundLogin").val('Y');
+    	 		}else{
+    	 			$("#refundLogin").val('N');
+    	 		};
+    		}
+        		//	alert("1"+logrnd);
+        			//alert($("#loginRand").val());
+       			$.ajax({
+    				type: "POST",
+    				url: submitUrl,
+    				data: {
+    					"loginRand":$("#loginRand").val()
+    					,"refundLogin":$("#refundLogin").val()
+    					,"refundFlag":"Y"
+    					,"nameErrorFocus":""
+    					,"loginUser.user_name": $("#UserName").val()
+    				  , "user.password": $("#password").val()
+    				  , "passwordErrorFocus":""
+    				  ,"randCode": $("#randCode").val()
+    				  ,"randErrorFocus":""
+    				  ,
+    				},
+    				timeout: 30000,
+    				//cache: false,
+    				//async: false,
+    				success: function(msg){
+    					//alert("sugc:  "+msg);
+    					if (msg.indexOf('请输入正确的验证码') > -1) {
+    						alert('请输入正确的验证码！');
+    						return;
+    					}
+    					if ( msg.indexOf('当前访问用户过多') > -1 || msg.match(/var\s+isLogin\s*=\s*false/i)) {
+    					        reLogin();
+    					}
+    					else {
+    						notify("登录成功，开始查询车票吧！", 10000);
+    						//notify("登录成功，开始查询车票吧！", 4000,false);
+    						window.location.replace( queryurl );
+    					};
+    				},
+    				error: function(msg){
+    					alert("fal:  "+msg);
+    					reLogin();
+    				},
+    				beforeSend: function(XHR){
+    					//alert("Data Saved: " + XHR);
+    				}
+    			});
+    		}
+    
+    		var count = 1;
+    		function reLogin(){
+    			count ++;
+    			$('#refreshButton').html("("+count+")次登录中...");
+    			setTimeout(submitForm, 600);
+    		}
+    		//初始化
+    		$("#subLink").after($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动登录").click(function() {
+    			count = 1;
+    			$(this).html("(1)次登录中...");
+    			//notify('开始尝试登录，请耐心等待！', 400);
+    			  //alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+    			submitForm();
+    			return false;
+    		}));
+    
+    		//alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+     // }
+    	});
+    	
+   	route("querySingleAction.do", function() {
+   
+   		//query
+   
+   		var isTicketAvailable = false;
+   
+   		//The table for displaying tickets
+   		var tbl = $(".obj")[0];
+   		if( tbl.addEventListener ) {
+   			// Not work on IE
+   			tbl.addEventListener("DOMNodeInserted", function() {
+   				if(checkTickets(event.target)){
+   					isTicketAvailable = true;
+   					highLightRow(event.target);
+   				}
+   				tbl.firstAppend=false;
+   			}, true);
+   		} else {
+   			window.$ && window.$(tbl).ajaxComplete(function() {
+   				$(this).find("tr").each(function(n, e) {
+   					if(checkTickets(e)){
+   						isTicketAvailable = true;
+   						highLightRow(e);
+   					}	
+   				});
+   				if(g.firstRemove) {
+   					g.firstRemove = false;
+   					if (isTicketAvailable) {
+   						if (isAutoQueryEnabled)
+   							document.getElementById("refreshButton").click();
+   						onticketAvailable(); //report
+   					}
+   					else {
+   						//wait for the button to become valid
+   					}
+   				}
+   			});
+   		}
+   
+   		//Trigger the button
+   		var doQuery = function() {
+   			displayQueryTimes(queryTimes++);
+   			tbl.firstAppend = true;
+   			g.firstRemove = true;
+   			document.getElementById(isStudentTicket ? "stu_submitQuery" : "submitQuery").click();
+   		}
+   
+   		var checkTickets = function(row) {
+   			var hasTicket = false;
+   			var canBook = true;
+   			$("td input[type=button]", row).each(function(i, e) {
+   				if(e.classList.contains("yuding_x")) {
+   					canBook = false;
+   				}
+   			});
+   			if(!canBook) return false;
+   
+   			$("td", row).each(function(i, e) {
+   				if(ticketType[i-1]) {
+   					var info = e.innerText.trim();
+   					if(info != "--" && info != "无") {
+   						hasTicket = true;
+   						highLightCell(e);
+   					}
+   				}
+   			});
+   
+   			return hasTicket;
+   		}
+   
+   		//The box into which the message is inserted.
+   		var g = document.getElementById("gridbox");
+   		//When the message is removed, the query should be completed.
+   		if( g.addEventListener ) {
+   			g.addEventListener("DOMNodeRemoved", function() {
+   				if(g.firstRemove) {
+   					g.firstRemove = false;
+   					if (isTicketAvailable) {
+   						if (isAutoQueryEnabled)
+   							document.getElementById("refreshButton").click();
+   						onticketAvailable(); //report
+   					}
+   					else {
+   						//wait for the button to become valid
+   					}
+   				}
+   			}, true);
+   		}
+   
+   		//hack into the validQueryButton function to detect query
+   		var _validQueryButton = validQueryButton;
+   
+   		validQueryButton = function() {
+   			_validQueryButton();
+   			if(isAutoQueryEnabled) doQuery();
+   		}
+   
+   		var queryTimes = 0; //counter
+   		var isAutoQueryEnabled = false; //enable flag
+   
+   		//please DIY:
+   		var audio = null;
+   
+   		var onticketAvailable = function() {
+   			if(window.Audio) {
+   				if(!audio) {
+   					audio = new Audio("http://www.w3school.com.cn/i/song.ogg");
+   					audio.loop = false;
+   				}
+   				audio.play();
+   				notify("可以订票了！", 4000);
+   			} else {
+   				notify("可以订票了！",4000);
+   			}
+   		}
+   		var highLightRow = function(row) {
+   			//$(row).css("background-color", "red");
+   			$(row).css("background-color", "#D1E1F1");
+   		}
+   		var highLightCell = function(cell) {
+   			//$(cell).css("background-color", "blue");
+   			$(cell).css("background-color", "#2CC03E");
+   		}
+   		var displayQueryTimes = function(n) {
+   			document.getElementById("refreshTimes").innerText = n;
+   		};
+   
+   		var isStudentTicket = false;
+   
+   		//Control panel UI
+   		var ui = $("<div>请先选择好出发地，目的地，和出发时间。&nbsp;&nbsp;&nbsp;</div>")
+   			.append(
+   				$("<input id='isStudentTicket' type='checkbox' />").change(function(){
+   					isStudentTicket = this.checked;
+   				})
+   			)
+   			.append(
+   				$("<label for='isStudentTicket'></label>").html("学生票&nbsp;&nbsp;")
+   			)
+   			.append(
+   				$("<button style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("开始刷票").click(function() {
+   					if(!isAutoQueryEnabled) {
+   						isTicketAvailable = false;
+   						if(audio && !audio.paused) audio.pause();
+   						isAutoQueryEnabled = true;
+   						doQuery();
+   						this.innerText="停止刷票";
+   					}
+   					else {
+   						isAutoQueryEnabled = false;
+   						this.innerText="开始刷票";
+   					}
+   				})
+   			)
+   			.append(
+   				$("<span>").html("&nbsp;&nbsp;尝试次数：").append(
+   					$("<span/>").attr("id", "refreshTimes").text("0")
+   				)
+   			)
+   			.append( 
+   				//Custom ticket type
+   				$("<div>如果只需要刷特定的票种，请在余票信息下面勾选。</div>")
+   					.append($("<a href='#' style='color: blue;'>只勾选坐票&nbsp;&nbsp;</a>").click(function() {
+   						$(".hdr tr:eq(2) td").each(function(i,e) {
+   							$(this).find("input").attr("checked", $(this).text().indexOf("座") != -1 ).change();
+   						});
+   						return false;
+   					}))
+   					.append($("<a href='#' style='color: blue;'>只勾选卧铺&nbsp;&nbsp;</a>").click(function() {
+   						$(".hdr tr:eq(2) td").each(function(i,e) {
+   							$(this).find("input").attr("checked", $(this).text().indexOf("卧") != -1 ).change();
+   						});
+   						return false;
+   					}))
+   			);
+    // if($("#fromStationText").val().indexof('汉字')>=0){
+     
+    // }
+   		var container = $(".cx_title_w:first");
+   		container.length ?
+   			ui.insertBefore(container) : ui.appendTo(document.body);
+   
+   		//Ticket type selector & UI
+   		var ticketType = new Array();
+   		$(".hdr tr:eq(2) td").each(function(i,e) {
+   			ticketType.push(false);
+   			if(i<3) return;
+   			ticketType[i] = true;
+   
+   			var c = $("<input/>").attr("type", "checkBox").attr("checked", true);
+   			c[0].ticketTypeId = i;
+   			c.change(function() {
+   				ticketType[this.ticketTypeId] = this.checked;
+   			}).appendTo(e);
+   		});
+   	});
+    route("confirmPassengerAction.do", function() {
+   		/**
+   		 * Auto Submit Order
+   		 * From: https://gist.github.com/1577671
+   		 * Author: kevintop@gmail.com  
+   		 */
+   		//Auto select the first user when not selected
+   		if( !$("input._checkbox_class:checked").length ) {
+   			$("input._checkbox_class:first").click();
+   		}
+   		//passengerTickets
+                  // var userInfoUrl = 'https://dynamic.12306.cn/otsweb/sysuser/user_info.jsp';
+   		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
+   		var count = 1;
+   		var t;
+   	        var doing = false;
+   	        var info="";	        
+   		var oseat;
+   		var submiturl;
+   		var geturl;
+   		var tour = 'dc';
+     var submiturl;
+   		function submitForm(){
+   			var wantDate = $("#startdatepicker").val();
+   	          	$("#start_date").val(wantDate);
+   	        	$("#_train_date_str").val(wantDate);
+   	        	if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+   					return;
+   				}
+    	    jQuery.ajax({
+    				 url: 'myOrderAction.do?method=getOrderWaitTime',
+         type: "GET",
+   	     data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+     				dataType: "json", 
+    					timeout:10000,
+    					success: function(msg)
+    					{
+    						//Refresh token
+    						//var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
+    						//var newToken = match && match[1];
+    						//if(newToken) {
+    						//	$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
+    						//}
+                                                      
+    						if(msg != null){
+     					   if( msg.waitTime<=0 && msg.orderId !="") {
+    							//Success!
+  
+    							   //
+              alert("车票预订成功，恭喜! 订单号："+msg.orderId);
+              notify("车票预订成功，恭喜!",500); 
+              window.location.replace(userInfoUrl);
+         					return;
+    						 }else {
+    						  //alert(msg);
+            showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
+    						}
+    						} else{
+     					 //alert("提交数据错误，无法订票！");
+          
+    						}
+         
+    					},
+    					error: function(msg){
+    						showMsg("错误:"+msg);
+    						reSubmitForm();
+    					}
+    				}); 
+   		 	}
+   	function showMsg(msg){
+   	                 //每行显示4个
+   	                 if (count%4==1){
+   	                  	info=info+"</tr><tr>"+"<td width='25%'>第"+count+"次："+msg+"</td>";
+   	                  } else
+   	                   info=info+"<td width='25%'>第"+count+"次："+msg+"</td>";
+   	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr><td>信息:</td></tr><tr>"+info+"</tr></table>");
+   	                 //$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
+   	}
+   	function reSubmitForm(){
+   		count ++;
+   		$('#refreshButton').html("("+count+")次自动提交中...单击停止");
+   		//setTimeout(submitForm, 500);
+   	}
+   	function reloadSeat(){
+   		//默认勾选系统定的席别,将其他的席别变为可用状态，不影响当天预订
+   		$("select[name$='_seat']").html('<option value="1">硬座</option><option value="3" selected>硬卧</option><option value="2" selected>软座</option><option value="4">软卧</option><option value="M">一等座</option><option value="O">二等座</option><option value="6">高级软卧</option><option value="9" selected>商务座</option><option value="P" selected>特等座</option><option value="Q">观光座</option><option value="S">一等包座</option>');
+                   $("select[name$='_seat']").val(oseat);	
+   	
+   	}
+   	//初始化
+   	function stop ( msg ) {
+   			clearInterval(t);
+   			t = 0;
+   			doing=false;
+   			count = 1;			
+   			if(msg!="")alert( msg );
+   			info="";
+   			$('#msg_div').html("");
+   			$('#refreshButton').html("自动提交订单");			
+   			$(":button").attr("disabled",false);
+                   	$(":button").removeClass("long_button_x");
+                   	
+   		}
+       if($("#refreshButton").size()<1){
+   			//重置后加载所有席别
+   			//保存当前席别
+   			oseat=$("select[name$='_seat']").val();
+   			$("select[name$='_seat']") .each(function(){this.blur(function(){
+   				alert(this.attr("id") + "blur");
+   			});});
+   			//初始化所有席别
+   			$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
+   			reloadSeat();
+   			//$(".conWrap").append("<div id='msg_div'></div>");		
+   			$(".conWrap").append("<table id='msg_div' width='100%'>"+info+"</table>");
+   			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
+   			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+   			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+   		 		$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
+   		               if (doing == true){
+   					stop('');
+   					return false;
+   				}else {
+   					
+   					count = 1;
+   					if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+   						return;
+   					}
+   					$(this).html("(1)次提交中...单击停止");
+   					var freq;
+   					switch($("#freq").val()){
+   						case '0':
+   							freq = 500;
+   							break;
+   						case '1':
+   						default:
+   							freq = 1000;
+   							break;
+   						case '2':
+   							freq = 2000;
+   							break;
+   					}
+   					//给tourFlag赋值
+   					//tourFlag = "dc";
+  
+   					//submitForm();
+   			     $.ajax({ 
+     				  url :'confirmPassengerAction.do?method=getQueueCount',
+      					type :"GET",
+           dataType: "json", 
+   				    data:{train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val(),ticket:$("#left_ticket").val()},
+       				success:function(data){
+      						if(data.op_2){
+      							alert("排队人数"+data.count+"人大于余票"+data.ticket+"张，放弃吧!");
+             stop('');
+             return false;
+      						}else{
+      						   // alert("余票:"+data.count+"人大于余票"+data.ticket+"张，放弃吧!");
+                if(tour=='dc'){
+      							//异步下单-单程
+      	         				      geturl='confirmPassengerAction.do?method=confirmSingleForQueueOrder';
+                      				    }else if(tour=='wc'){
+      						    //异步下单-往程
+      		    				      geturl='confirmPassengerAction.do?method=confirmPassengerInfoGoForQueue';
+      	          				    }else if(tour=='fc'){
+      					   		//异步下单-返程
+      		        			      geturl='confirmPassengerAction.do?method=confirmPassengerInfoBackForQueue';
+      	          				    }else if(tour=='gc'){
+      							//异步下单-改签
+      		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
+      	          				    }	
+      						$.ajax({ 
+      				         url :geturl,
+       					       type :"POST",
+       				        data: $('#confirmPassenger').serialize(),
+       						      dataType: "json", 
+        						      success:function(data){
+     		             if(data.errMsg != 'Y'){
+     		             alert(data.errMsg);
+                    //if (data.errMsg.indexof('验证码') != -1){
+                        refreshImg();
+                         $("#rand").val("");
+                        $("#rand").focus();
+                        stop("");
+                   // }
+     		             }else{
+     		             t = setInterval(submitForm, freq);
+      				         	doing = !doing;
+     		              }
+        						      },
+        						      error:function(){
+        						      	alert("下单失败，网络繁忙");
+        						      	return false;
+        						      }
+        						      })
+     		                          	            
+     				              }
+     					},
+     					error: function(msg){
+      						showMsg(msg+'34');
+      					}
+      					});    
+   				}
+   			  				
+   		    }));
+     $(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
+   	 
+     alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+   		$("#rand").focus();
+   		
+   		}
+   	});
+   }, true);
