@@ -441,6 +441,7 @@
  		var submiturl;
  		var geturl;
  		var tour = 'dc';
+   var submiturl;
  		function submitForm(){
  			var wantDate = $("#startdatepicker").val();
  	          	$("#start_date").val(wantDate);
@@ -466,10 +467,42 @@
   						if(msg != null){
    					   if( msg.waitTime<=0 && msg.orderId !="") {
   							//Success!
-  							   alert("车票预订成功，恭喜! 订单号："+msg.orderId);
-  							   notify("车票预订成功，恭喜!",500);
-  							   window.location.replace(userInfoUrl);
-  							   return;
+
+  							   //window.location.replace(userInfoUrl);
+            if(tour=='dc'){
+  		         //异步下单-单程
+ 			         submiturl="confirmPassengerAction.do?method=payOrder&orderSequence_no="+msg.orderId;
+ 		          }else if(tour=='wc'){
+ 			         //异步下单-往程
+ 			        submiturl="confirmPassengerAction.do?method=wcConfirm&orderSequence_no="+msg.orderId;
+ 		         }else if(tour=='fc'){
+ 			        //异步下单-返程
+ 		         submiturl="confirmPassengerAction.do?method=backPay&orderSequence_no="+msg.orderId;
+ 		          }else if(tour=='gc'){
+ 			         //异步下单-改签
+ 		         	submiturl="confirmPassengerResignAction.do?method=resignPay&orderSequence_no="+returnObj.orderId;
+ 	           }
+            $.ajax({ 
+      			         url :submiturl,
+      					       type :"POST",
+      				        data: $('#confirmPassenger').serialize(),
+      						      dataType: "json", 
+       						      success:function(data){
+    		             //if(data.errMsg != 'Y'){
+    		            // alert(data.errMsg)
+    		             //}else{
+    		            // t = setInterval(submitForm, freq);
+     				         	//doing = !doing;
+    		             //             
+                   alert("车票预订成功，恭喜! 订单号："+msg.orderId);
+   							         notify("车票预订成功，恭喜!",500); 
+       						      },
+       						      error:function(){
+       						      	alert("下单失败，网络繁忙");
+       						      	return false;
+       						      }
+       						      })  
+  							   //return;
   						 }else {
   						  //alert(msg);
           showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
