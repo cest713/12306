@@ -448,7 +448,35 @@
  	        	if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
  					return;
  				}
-
+  	   		jQuery.ajax({
+  				        url: 'myOrderAction.do?method=getOrderWaitTime',
+  				         data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+  					type: "GET",
+  					timeout: 30000,
+  					success: function(msg)
+  					{
+  						//Refresh token
+  						//var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
+  						//var newToken = match && match[1];
+  						//if(newToken) {
+  						//	$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
+  						//}
+                                                    
+  						if( msg.waitTime<=0 ) {
+  							//Success!
+  							alert("车票预订成功，恭喜!");
+  							notify("车票预订成功，恭喜!",500);
+  							window.location.replace(userInfoUrl);
+  							return;
+  						}else {
+  						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
+  						}
+  					},
+  					error: function(msg){
+  						showMsg(msg+'34');
+  						reSubmitForm();
+  					}
+  				}); 
  		 	}
  	function showMsg(msg){
  	                 //每行显示4个
