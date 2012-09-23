@@ -464,9 +464,9 @@
   						//}
                                                     
   						if(msg != null){
-   					   if( msg.waitTime<=0 && msg.orderId !='') {
+   					   if( msg.waitTime<=0 && msg.orderId !="") {
   							//Success!
-  							   alert("车票预订成功，恭喜!");
+  							   alert("车票预订成功，恭喜! 订单号："+msg.orderId);
   							   notify("车票预订成功，恭喜!",500);
   							   window.location.replace(userInfoUrl);
   							   return;
