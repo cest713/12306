@@ -225,7 +225,7 @@
   		}));
   
   		//alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
-    if($("#UserName").val().indexof('用户名')>=0){
+    if(()$("#UserName").val()).indexof('用户名') >= 0){
         alert($("#UserName").val());
         $("#UserName").focus();
     }
@@ -606,7 +606,7 @@
       						      success:function(data){
    		             if(data.errMsg != 'Y'){
    		             alert(data.errMsg);
-                  if (data.errmsg.indeof('验证码')>0){
+                  if (data.errmsg.indeof('验证码') > 0){
                       refreshImg();
                        $("#rand").val("");
                       $("#rand").focus();
