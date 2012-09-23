@@ -452,7 +452,7 @@
   				  url: 'myOrderAction.do?method=getOrderWaitTime',
  	      data:{tourFlag : "dc",train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
    					type: "GET",
-  					timeout: 30000,
+  					timeout:10000,
   					success: function(msg)
   					{
   						//Refresh token
@@ -462,7 +462,7 @@
   						//	$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
   						//}
                                                     
-  						if(data != null){
+  						if(msg != null){
    					   if( msg.waitTime<=0 ) {
   							//Success!
   							   alert("车票预订成功，恭喜!");
@@ -470,7 +470,8 @@
   							   window.location.replace(userInfoUrl);
   							   return;
   						 }else {
-  						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
+  						  alert(msg);
+          showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
   						}
   						} else{
    					 alert("提交数据错误，无法订票！");
