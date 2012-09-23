@@ -470,7 +470,7 @@
   							   window.location.replace(userInfoUrl);
   							   return;
   						 }else {
-  						  alert(msg);
+  						  //alert(msg);
           showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
   						}
   						} else{
