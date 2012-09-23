@@ -473,7 +473,7 @@
   						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
   						}
   						} else{
-   					 alert("提交数据错误，无法订票！")；
+   					 alert("提交数据错误，无法订票！");
         
   						}
        
