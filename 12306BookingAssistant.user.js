@@ -1,6 +1,5 @@
- 
 /*
-*  12306 Auto Query => A javascript snippet to help you book tickets online.
+  *  12306 Auto Query => A javascript snippet to help you book tickets online.
   *  12306 Booking Assistant
   *  Copyright (C) 2011 Hidden
   * 
