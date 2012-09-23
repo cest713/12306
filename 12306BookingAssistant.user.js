@@ -151,7 +151,7 @@
   					 }
   				 },
   				error:function(XMLHttpRequest, textStatus, errorThrown) {
-  					 alert("缃戣矾蹇欙紝璇风◢鍚庨噸璇�");
+  					 alert("错误!);
   					 return false;
   				}
   		});
@@ -226,7 +226,8 @@
   
   		//alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
     //if($("#UserName").val().indexof("用户名")>=0){
-        $("#UserName").click();
+        alert($("#UserName").val());
+        $("#UserName").focus();
     //}
   	});
   	
