@@ -559,11 +559,12 @@
    				  url :'confirmPassengerAction.do?method=getQueueCount',
     					type :"GET",
          dataType: "json", 
-  		     data: {tourFlag : "dc",train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()}         ,
-
-    					success:function(data){
+ 				    data:{train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val(),ticket:$("#left_ticket").val()},
+     				success:function(data){
     						if(data.op_2){
     							alert("排队人数"+data.count+"人大于余票"+data.ticket+"张，放弃吧!");
+           stop('');
+           return false;
     						}else{
     						    if(tour=='dc'){
     							//异步下单-单程
