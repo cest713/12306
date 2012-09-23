@@ -558,7 +558,7 @@
  			     jQuery.ajax({ 
    				  url :'confirmPassengerAction.do?method=getQueueCount',
     					type :"GET",
-  		     data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+  		     data:{tourFlag : 'dc',train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
     					dataType: "json", 
     					success:function(data){
     						if(data.op_2){
