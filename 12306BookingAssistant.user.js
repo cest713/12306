@@ -470,40 +470,8 @@
 
   							   //window.location.replace(userInfoUrl)
             alert("车票预订成功，恭喜! 订单号："+msg.orderId);
-            if(tour=='dc'){
-  		         //异步下单-单程
- 			         submiturl="confirmPassengerAction.do?method=payOrder&orderSequence_no="+msg.orderId;
- 		          }else if(tour=='wc'){
- 			         //异步下单-往程
- 			        submiturl="confirmPassengerAction.do?method=wcConfirm&orderSequence_no="+msg.orderId;
- 		         }else if(tour=='fc'){
- 			        //异步下单-返程
- 		         submiturl="confirmPassengerAction.do?method=backPay&orderSequence_no="+msg.orderId;
- 		          }else if(tour=='gc'){
- 			         //异步下单-改签
- 		         	submiturl="confirmPassengerResignAction.do?method=resignPay&orderSequence_no="+msg.orderId;
- 	           }
-            $.ajax({ 
-      			         url :submiturl,
-      					       type :"POST",
-      				        data: $('#confirmPassenger').serialize(),
-      						      dataType: "json", 
-       						      success:function(data){
-    		             //if(data.errMsg != 'Y'){
-    		            // alert(data.errMsg)
-    		             //}else{
-    		            // t = setInterval(submitForm, freq);
-     				         	//doing = !doing;
-    		             //             
-
-   							         notify("车票预订成功，恭喜!",500); 
-       						      },
-       						      error:function(){
-       						      	alert("下单失败，网络繁忙");
-       						      	return false;
-       						      }
-       						      })  
-  							   //return;
+            notify("车票预订成功，恭喜!",500); 
+       					   //return;
   						 }else {
   						  //alert(msg);
           showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
@@ -515,7 +483,7 @@
        
   					},
   					error: function(msg){
-  						showMsg(msg+'34');
+  						showMsg("错误:"msg);
   						reSubmitForm();
   					}
   				}); 
@@ -608,7 +576,8 @@
            stop('');
            return false;
     						}else{
-    						    if(tour=='dc'){
+    						   // alert("余票:"+data.count+"人大于余票"+data.ticket+"张，放弃吧!");
+              if(tour=='dc'){
     							//异步下单-单程
     	         				      geturl='confirmPassengerAction.do?method=confirmSingleForQueueOrder';
                     				    }else if(tour=='wc'){
@@ -627,12 +596,12 @@
      				        data: $('#confirmPassenger').serialize(),
      						      dataType: "json", 
       						      success:function(data){
-   		             //if(data.errMsg != 'Y'){
-   		            // alert(data.errMsg)
-   		             //}else{
+   		             if(data.errMsg != 'Y'){
+   		             alert(data.errMsg)
+   		             }else{
    		             t = setInterval(submitForm, freq);
     				         	doing = !doing;
-   		             //             	             }
+   		              }
       						      },
       						      error:function(){
       						      	alert("下单失败，网络繁忙");
