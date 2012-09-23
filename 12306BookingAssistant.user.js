@@ -420,6 +420,199 @@
  			}).appendTo(e);
  		});
  	});
+  route("confirmPassengerAction.do", function() {
+ 		/**
+ 		 * Auto Submit Order
+ 		 * From: https://gist.github.com/1577671
+ 		 * Author: kevintop@gmail.com  
+ 		 */
+ 		//Auto select the first user when not selected
+ 		if( !$("input._checkbox_class:checked").length ) {
+ 			$("input._checkbox_class:first").click();
+ 		}
+ 		//passengerTickets
+                // var userInfoUrl = 'https://dynamic.12306.cn/otsweb/sysuser/user_info.jsp';
+ 		var userInfoUrl = 'https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryMyOrderNotComplete&leftmenu=Y';
+ 		var count = 1;
+ 		var t;
+ 	        var doing = false;
+ 	        var info="";	        
+ 		var oseat;
+ 		var submiturl;
+ 		var geturl;
+ 		var tour = 'dc';
+ 		function submitForm(){
+ 			var wantDate = $("#startdatepicker").val();
+ 	          	$("#start_date").val(wantDate);
+ 	        	$("#_train_date_str").val(wantDate);
+ 	        	if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+ 					return;
+ 				}
+ 		   
+ 			jQuery.ajax({
+ 				        url: 'myOrderAction.do?method=getOrderWaitTime',
+ 				        data: data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+ 					type: "GET",
+ 					timeout: 30000,
+ 					success: function(msg)
+ 					{
+ 						//Refresh token
+ 						//var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
+ 						//var newToken = match && match[1];
+ 						//if(newToken) {
+ 						//	$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
+ 						//}
+                                                   
+ 						if( msg.waitTime<=0 ) {
+ 							//Success!
+ 							alert("车票预订成功，恭喜!");
+ 							notify("车票预订成功，恭喜!",500);
+ 							window.location.replace(userInfoUrl);
+ 							return;
+ 						}else {
+ 						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
+ 						}
+ 					},
+ 					error: function(msg){
+ 						showMsg(msg+'34');
+ 						reSubmitForm();
+ 					}
+ 				});
+ 	}
+ 	function showMsg(msg){
+ 	                 //每行显示4个
+ 	                 if (count%4==1){
+ 	                  	info=info+"</tr><tr>"+"<td width='25%'>第"+count+"次："+msg+"</td>";
+ 	                  } else
+ 	                   info=info+"<td width='25%'>第"+count+"次："+msg+"</td>";
+ 	                  $("#msg_div").html("<table id='msg_div' width='100%'><tr><td>信息:</td></tr><tr>"+info+"</tr></table>");
+ 	                 //$("#msg_div").html($("#msg_div").html() + "<div>第"+count+"次："+msg+"</div>");
+ 	}
+ 	function reSubmitForm(){
+ 		count ++;
+ 		$('#refreshButton').html("("+count+")次自动提交中...单击停止");
+ 		//setTimeout(submitForm, 500);
+ 	}
+ 	function reloadSeat(){
+ 		//默认勾选系统定的席别,将其他的席别变为可用状态，不影响当天预订
+ 		$("select[name$='_seat']").html('<option value="1">硬座</option><option value="3" selected>硬卧</option><option value="2" selected>软座</option><option value="4">软卧</option><option value="M">一等座</option><option value="O">二等座</option><option value="6">高级软卧</option><option value="9" selected>商务座</option><option value="P" selected>特等座</option><option value="Q">观光座</option><option value="S">一等包座</option>');
+                 $("select[name$='_seat']").val(oseat);	
+ 	
+ 	}
+ 	//初始化
+ 	function stop ( msg ) {
+ 			clearInterval(t);
+ 			t = 0;
+ 			doing=false;
+ 			count = 1;			
+ 			if(msg!="")alert( msg );
+ 			info="";
+ 			$('#msg_div').html("");
+ 			$('#refreshButton').html("自动提交订单");			
+ 			$(":button").attr("disabled",false);
+                 	$(":button").removeClass("long_button_x");
+                 	
+ 		}
+     if($("#refreshButton").size()<1){
+ 			//重置后加载所有席别
+ 			//保存当前席别
+ 			oseat=$("select[name$='_seat']").val();
+ 			$("select[name$='_seat']") .each(function(){this.blur(function(){
+ 				alert(this.attr("id") + "blur");
+ 			});});
+ 			//初始化所有席别
+ 			$(".qr_box :checkbox[name^='checkbox']").each(function(){$(this).click(reloadSeat)});
+ 			reloadSeat();
+ 			//$(".conWrap").append("<div id='msg_div'></div>");		
+ 			$(".conWrap").append("<table id='msg_div' width='100%'>"+info+"</table>");
+ 			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
+ 			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+ 			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
+ 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
+ 		               if (doing == true){
+ 					stop('');
+ 					return false;
+ 				}else {
+ 					
+ 					count = 1;
+ 					if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
+ 						return;
+ 					}
+ 					$(this).html("(1)次提交中...单击停止");
+ 					var freq;
+ 					switch($("#freq").val()){
+ 						case '0':
+ 							freq = 500;
+ 							break;
+ 						case '1':
+ 						default:
+ 							freq = 1000;
+ 							break;
+ 						case '2':
+ 							freq = 2000;
+ 							break;
+ 					}
+ 					//给tourFlag赋值
+ 					//tourFlag = "dc";
+ 					jQuery.ajax({ 
+  				        url :'confirmPassengerAction.do?method=getQueueCount',
+   					type :"GET",
+ 		            data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+   					dataType: "json", 
+   					error: function(msg){
+   						showMsg(msg+'34');
+   					},
+   					success:function(data){
+   						if(data.op_2){
+   							alert("排队太多，放弃吧!");
+   						}else{
+   						    if(tour=='dc'){
+   							//异步下单-单程
+   	         				      geturl='confirmPassengerAction.do?method=confirmSingleForQueueOrder';
+                   				    }else if(tour=='wc'){
+   						    //异步下单-往程
+   		    				      geturl='confirmPassengerAction.do?method=confirmPassengerInfoGoForQueue';
+   	          				    }else if(tour=='fc'){
+   					   		//异步下单-返程
+   		        			      geturl='confirmPassengerAction.do?method=confirmPassengerInfoBackForQueue';
+   	          				    }else if(tour=='gc'){
+   							//异步下单-改签
+   		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
+   	          				    }	
+   						jQuery.ajax({ 
+   				                      url :geturl,
+    					              type :"POST",
+    				                      data: $('#confirmPassenger').serialize(),
+    						      dataType: "json", 
+     						      success:function(data){
+  		                          	             if(data.errMsg != 'Y'){
+  		                          	             	alert(data.errMsg)
+  		                          	             }else{
+  		                          	             	t = setInterval(submitForm, freq);
+   				         		        doing = !doing;
+  		                          	             }
+     						      },
+     						      error:{
+     						      	alert("下单失败，网络繁忙");
+     						      	return false;
+     						      }
+     						      })
+  		                          	            
+  				              }
+  					}
+   					});
+ 					//submitForm();
+ 				}
+ 			
+ 			    
+ 		    }))
+ 		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
+ 	        alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
+ 		$("#rand").focus();
+ 		
+ 		}
+ 	});
+ }, true);
  	
 
  }, true);
