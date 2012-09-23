@@ -448,7 +448,35 @@
  	        	if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
  					return;
  				}
- 		   
+ 		   		jQuery.ajax({
+ 				        url: 'myOrderAction.do?method=getOrderWaitTime',
+ 				        data: data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+ 					type: "GET",
+ 					timeout: 30000,
+ 					success: function(msg)
+ 					{
+ 						//Refresh token
+ 						//var match = msg && msg.match(/org\.apache\.struts\.taglib\.html\.TOKEN['"]?\s*value=['"]?([^'">]+)/i);
+ 						//var newToken = match && match[1];
+ 						//if(newToken) {
+ 						//	$("input[name='org.apache.struts.taglib.html.TOKEN']").val(newToken);
+ 						//}
+                                                   
+ 						if( msg.waitTime<=0 ) {
+ 							//Success!
+ 							alert("车票预订成功，恭喜!");
+ 							notify("车票预订成功，恭喜!",500);
+ 							window.location.replace(userInfoUrl);
+ 							return;
+ 						}else {
+ 						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
+ 						}
+ 					},
+ 					error: function(msg){
+ 						showMsg(msg+'34');
+ 						reSubmitForm();
+ 					}
+ 				}); 
  		 	}
  	function showMsg(msg){
  	                 //每行显示4个
@@ -527,54 +555,7 @@
  					//tourFlag = "dc";
 
  					//submitForm();
-     $.ajax({ 
-     			        url :'confirmPassengerAction.do?method=getQueueCount',
-     					type :"GET",
-   		            data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
-     					dataType: "json", 
-     					success:function(data){
-     						if(data.op_2){
-     							alert("排队太多，放弃吧!");
-     						}else{
-     						    if(tour=='dc'){
-     							//异步下单-单程
-     	         				      geturl='confirmPassengerAction.do?method=confirmSingleForQueueOrder';
-                     				    }else if(tour=='wc'){
-     						    //异步下单-往程
-     		    				      geturl='confirmPassengerAction.do?method=confirmPassengerInfoGoForQueue';
-     	          				    }else if(tour=='fc'){
-     					   		//异步下单-返程
-     		        			      geturl='confirmPassengerAction.do?method=confirmPassengerInfoBackForQueue';
-     	          				    }else if(tour=='gc'){
-     							//异步下单-改签
-     		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
-     	          				    }	
-     						$.ajax({ 
-     				                      url :geturl,
-      					              type :"POST",
-      				                      data: $('#confirmPassenger').serialize(),
-      						      dataType: "json", 
-       						      success:function(data){
-    		                          	             if(data.errMsg != 'Y'){
-    		                          	             	alert(data.errMsg)
-    		                          	             }else{
-    		                          	             	t = setInterval(submitForm, freq);
-     				         		        doing = !doing;
-    		                          	             }
-       						      },
-       						      error:{
-       						      	alert("下单失败，网络繁忙");
-       						      	return false;
-       						      }
-       						      })
-    		                          	            
-    				              }
-    					},
-    					error: function(msg){
-     						showMsg(msg+'34');
-     					},
-     					});
-  			     
+       			     
  				}
  			  				
  		    }));
