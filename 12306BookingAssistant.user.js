@@ -9,9 +9,6 @@
   *  12306 Auto Login => A javascript snippet to help you auto login 12306.com.
   *  Copyright (C) 2011 Kevintop
   * 
-  *   12306 Booking Assistant 12306 订票助手之(自动登录，自动查票，自动订单)
-  *   Copyright (C) 2011 zzdhidden
-  * 
   *  Includes jQuery
   *  Copyright 2011, John Resig
   *  Dual licensed under the MIT or GPL Version 2 licenses.
@@ -31,16 +28,17 @@
   *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   * 
   */
-  
+ 
  // ==UserScript==  
  // @name         12306 Booking Assistant
- // @version 	    2.0.0
- // @author       cest713
- // @namespace    https://github.com/cest713
+ // @version 	 1.4.0
+ // @author       zzdhidden@gmail.com
+ // @namespace    https://github.com/zzdhidden
  // @description  12306 订票助手之(自动登录，自动查票，自动订单)
  // @include      *://dynamic.12306.cn/otsweb/*
  // @require	https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
  // ==/UserScript== 
+  
  
  function withjQuery(callback, safe){
  	if(typeof(jQuery) == "undefined") {
