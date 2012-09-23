@@ -598,7 +598,7 @@
       						      success:function(data){
    		             if(data.errMsg != 'Y'){
    		             alert(data.errMsg);
-                  refreshImg();
+                  //refreshImg();
    		             }else{
    		             t = setInterval(submitForm, freq);
     				         	doing = !doing;
