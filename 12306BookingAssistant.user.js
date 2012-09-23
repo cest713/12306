@@ -31,17 +31,14 @@
   *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   * 
   */
- 
+  
  // ==UserScript==  
- // @name         12306订票助手(By 无聊小偶~~)
- // @version	 1.0
+ // @name         12306 Booking Assistant
+ // @version 	    2.0.0
  // @author       cest713
- // @namespace    https://github.com/zzdhidden
- // @description  12306 订票助手(自动登录，查票，订单),部分源代码源自github分享，不得作任何商业用途！否则必究!
- // @include      *://dynamic.12306.cn/otsweb/loginAction.do*
- // @include      *://dynamic.12306.cn/otsweb/login*
- // @include	 *://dynamic.12306.cn/otsweb/order/querySingleAction.do*
- // @include	 *://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do*
+ // @namespace    https://github.com/cest713
+ // @description  12306 订票助手之(自动登录，自动查票，自动订单)
+ // @include      *://dynamic.12306.cn/otsweb/*
  // @require	https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
  // ==/UserScript== 
  
