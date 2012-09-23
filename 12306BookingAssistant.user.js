@@ -441,7 +441,7 @@ withjQuery(function($){
 		var oseat;
 		var submiturl;
 		var geturl;
-		var tourFlag;
+		var tourFlag = 'dc';
 		function submitForm(tourFlag){
 			var wantDate = $("#startdatepicker").val();
 	          	$("#start_date").val(wantDate);
@@ -531,7 +531,7 @@ withjQuery(function($){
 			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
 		               if (doing == true){
-					stop("");
+					stop('');
 					return false;
 				}else {
 					
@@ -554,8 +554,8 @@ withjQuery(function($){
 							break;
 					}
 					//给tourFlag赋值
-					tourFlag = "dc";
-					$.ajax({ 
+					//tourFlag = "dc";
+					jQuery.ajax({ 
  				        url :'confirmPassengerAction.do?method=getQueueCount',
   					type :"GET",
   					data:{train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val(),ticket:$("#left_ticket").val()},
@@ -580,7 +580,7 @@ withjQuery(function($){
   							//异步下单-改签
   		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
   	          				    }	
-  						$.ajax({ 
+  						jQuery.ajax({ 
   				                      url :geturl,
    					              type :"POST",
    				                      data: $('#confirmPassenger').serialize(),
@@ -597,12 +597,10 @@ withjQuery(function($){
     						      	alert("下单失败，网络繁忙");
     						      	return false;
     						      }
-    						      )
+    						      })
  		                          	            
- 				         	
-   						})
-   					     }
- 					})
+ 				              }
+ 					}
   					})
 					//submitForm();
 				}
