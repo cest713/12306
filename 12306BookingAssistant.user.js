@@ -568,8 +568,8 @@
     				         		       doing = !doing;
    		               }
       						      },
-      						      error:{
-      						      	//alert('下单失败，网络繁忙');
+      						      error:function(){
+      						       alert('下单失败，网络繁忙');
       						      	return false;
       						      }
       						      });     
