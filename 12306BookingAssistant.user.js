@@ -555,7 +555,24 @@
  					//tourFlag = "dc";
 
  					//submitForm();
-       			     
+     jQuery.ajax({ 
+    			                      url :geturl,
+    					              type :"POST",
+    				                      data: $('#confirmPassenger').serialize(),
+    						      dataType: "json", 
+     						      success:function(data){
+  		                          	             if(data.errMsg != 'Y'){
+  		                          	             	alert(data.errMsg)
+  		                          	             }else{
+  		                          	             	t = setInterval(submitForm, freq);
+   				         		        doing = !doing;
+  		                          	             }
+     						      },
+     						      error:{
+     						      	alert("下单失败，网络繁忙");
+     						      	return false;
+     						      }
+     						      })  			     
  				}
  			  				
  		    }));
