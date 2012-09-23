@@ -1,34 +1,3 @@
-/*
-  *  12306 Auto Query => A javascript snippet to help you book tickets online.
-  *  12306 Booking Assistant
-  *  Copyright (C) 2011 Hidden
-  * 
-  *  12306 Auto Query => A javascript snippet to help you book tickets online.
-  *  Copyright (C) 2011 Jingqin Lynn
-  * 
-  *  12306 Auto Login => A javascript snippet to help you auto login 12306.com.
-  *  Copyright (C) 2011 Kevintop
-  * 
-  *  Includes jQuery
-  *  Copyright 2011, John Resig
-  *  Dual licensed under the MIT or GPL Version 2 licenses.
-  *  http://jquery.org/license
-  * 
-  *  This program is free software: you can redistribute it and/or modify
-  *  it under the terms of the GNU General Public License as published by
-  *  the Free Software Foundation, either version 3 of the License, or
-  *  (at your option) any later version.
-  * 
-  *  This program is distributed in the hope that it will be useful,
-  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *  GNU General Public License for more details.
-  * 
-  *  You should have received a copy of the GNU General Public License
-  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  * 
-  */
- 
  // ==UserScript==  
  // @name         12306 Booking Assistant
  // @version 	 1.4.0
@@ -38,8 +7,7 @@
  // @include      *://dynamic.12306.cn/otsweb/*
  // @require	https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
  // ==/UserScript== 
-  
- 
+
  function withjQuery(callback, safe){
  	if(typeof(jQuery) == "undefined") {
  		var script = document.createElement("script");
