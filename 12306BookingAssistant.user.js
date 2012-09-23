@@ -528,7 +528,53 @@
 
  					//submitForm();
  				}
- 			
+ 			  				jQuery.ajax({ 
+   				        url :'confirmPassengerAction.do?method=getQueueCount',
+    					type :"GET",
+  		            data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+    					dataType: "json", 
+    					success:function(data){
+    						if(data.op_2){
+    							alert("排队太多，放弃吧!");
+    						}else{
+    						    if(tour=='dc'){
+    							//异步下单-单程
+    	         				      geturl='confirmPassengerAction.do?method=confirmSingleForQueueOrder';
+                    				    }else if(tour=='wc'){
+    						    //异步下单-往程
+    		    				      geturl='confirmPassengerAction.do?method=confirmPassengerInfoGoForQueue';
+    	          				    }else if(tour=='fc'){
+    					   		//异步下单-返程
+    		        			      geturl='confirmPassengerAction.do?method=confirmPassengerInfoBackForQueue';
+    	          				    }else if(tour=='gc'){
+    							//异步下单-改签
+    		        			      geturl='confirmPassengerResignAction.do?method=confirmPassengerInfoResignForQueue';
+    	          				    }	
+    						jQuery.ajax({ 
+    				                      url :geturl,
+     					              type :"POST",
+     				                      data: $('#confirmPassenger').serialize(),
+     						      dataType: "json", 
+      						      success:function(data){
+   		                          	             if(data.errMsg != 'Y'){
+   		                          	             	alert(data.errMsg)
+   		                          	             }else{
+   		                          	             	t = setInterval(submitForm, freq);
+    				         		        doing = !doing;
+   		                          	             }
+      						      },
+      						      error:{
+      						      	alert("下单失败，网络繁忙");
+      						      	return false;
+      						      }
+      						      })
+   		                          	            
+   				              }
+   					},
+   					error: function(msg){
+    						showMsg(msg+'34');
+    					},
+    					});
  			    
  		    }));
    $(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
