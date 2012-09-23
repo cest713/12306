@@ -597,7 +597,8 @@
      						      dataType: "json", 
       						      success:function(data){
    		             if(data.errMsg != 'Y'){
-   		             alert(data.errMsg)
+   		             alert(data.errMsg);
+                  refreshImg();
    		             }else{
    		             t = setInterval(submitForm, freq);
     				         	doing = !doing;
