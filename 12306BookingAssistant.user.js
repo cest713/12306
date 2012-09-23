@@ -402,6 +402,9 @@
  						return false;
  					}))
  			);
+   if(#($'fromStationText').val()=""){
+    #($'fromStationText').focus();
+   }
  		var container = $(".cx_title_w:first");
  		container.length ?
  			ui.insertBefore(container) : ui.appendTo(document.body);
@@ -603,6 +606,7 @@
                       refreshImg();
                        $("#rand").val("");
                       $("#rand").focus();
+                      stop("");
                   }
    		             }else{
    		             t = setInterval(submitForm, freq);
