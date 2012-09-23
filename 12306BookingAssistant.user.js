@@ -555,14 +555,14 @@
  					//tourFlag = "dc";
 
  					//submitForm();
- 			     				jQuery.ajax({ 
-   				        url :'confirmPassengerAction.do?method=getQueueCount',
+ 			     jQuery.ajax({ 
+   				  url :'confirmPassengerAction.do?method=getQueueCount',
     					type :"GET",
-  		            data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+  		     data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
     					dataType: "json", 
     					success:function(data){
     						if(data.op_2){
-    							alert("排队太多，放弃吧!");
+    							alert("排队人数"+data.count+"人大于余票"+data.ticket+"张，放弃吧!");
     						}else{
     						    if(tour=='dc'){
     							//异步下单-单程
