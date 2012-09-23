@@ -569,8 +569,8 @@
    		               }
       						      },
       						      error:{
-      						      	alert("下单失败，网络繁忙");
-      						      	return false;
+      						      	//alert("下单失败，网络繁忙");
+      						      	//return false;
       						      }
       						      });     
  				}
