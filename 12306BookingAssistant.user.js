@@ -499,38 +499,6 @@
  			//日期可选,修正方框内容有年月日，应该是YYYY－MM—DD格式
  			//$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("td.bluetext:first").html()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
  			$("td.bluetext:first").html('<input type="text" name="orderRequest.train_date" value="' +$("#start_date").val()+'" id="startdatepicker" style="width: 150px;" class="input_20txt"  onfocus="WdatePicker({firstDayOfWeek:1})" />');
- 			$(".tj_btn").append($("<a href='#' style='padding: 5px 10px; background: #2CC03E;border-color: #259A33;border-right-color: #2CC03E;border-bottom-color:#2CC03E;color: white;border-radius: 5px;text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);'/>").attr("id", "refreshButton").html("自动提交订单").click(function() {
- 		               if (doing == true){
- 					stop('');
- 					return false;
- 				}else {
- 					
- 					count = 1;
- 					if(window.submit_form_check && !submit_form_check("confirmPassenger") ) { 
- 						return;
- 					}
- 					$(this).html("(1)次提交中...单击停止");
- 					var freq;
- 					switch($("#freq").val()){
- 						case '0':
- 							freq = 500;
- 							break;
- 						case '1':
- 						default:
- 							freq = 1000;
- 							break;
- 						case '2':
- 							freq = 2000;
- 							break;
- 					}
- 					//给tourFlag赋值
- 					//tourFlag = "dc";
- 					
- 					//submitForm();
- 				}
- 			
- 			    
- 		    }))
  		$(".tj_btn").append("自动提交频率：<select id='freq' ><option value='0' >频繁</option><option value='1' selected='' >正常</option><option value='2' >缓慢</option></select>");
  	        alert('如果使用自动提交订单功能，请在确认订单正确无误后，再点击自动提交按钮！');
  		$("#rand").focus();
