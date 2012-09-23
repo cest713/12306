@@ -151,7 +151,7 @@
   					 }
   				 },
   				error:function(XMLHttpRequest, textStatus, errorThrown) {
-  					 alert("错误!);
+  					 alert("错误!");
   					 return false;
   				}
   		});
