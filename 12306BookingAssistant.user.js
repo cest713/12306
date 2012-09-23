@@ -402,8 +402,8 @@
  						return false;
  					}))
  			);
-   if(#($'fromStationText').val()=""){
-    #($'fromStationText').focus();
+   if($(#'fromStationText').val()=""){
+    $(#'fromStationText').focus();
    }
  		var container = $(".cx_title_w:first");
  		container.length ?
