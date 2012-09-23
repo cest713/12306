@@ -228,7 +228,7 @@
     if($("#UserName").val().indexof('用户名')>=0){
         alert($("#UserName").val());
         $("#UserName").focus();
-    //}
+    }
   	});
   	
  	route("querySingleAction.do", function() {
