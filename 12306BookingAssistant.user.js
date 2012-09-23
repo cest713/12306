@@ -464,7 +464,7 @@
   						//}
                                                     
   						if(msg != null){
-   					   if( msg.waitTime<=0 ) {
+   					   if( msg.waitTime<=0 &&msg.orderId<>null) {
   							//Success!
   							   alert("车票预订成功，恭喜!");
   							   notify("车票预订成功，恭喜!",500);
