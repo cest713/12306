@@ -473,7 +473,7 @@ withjQuery(function($){
 						}else {
 						  showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
 						}
-					}
+					},
 					error: function(msg){
 						showMsg(msg+'34');
 						reSubmitForm();
@@ -562,7 +562,7 @@ withjQuery(function($){
   					dataType: "json", 
   					error: function(msg){
   						showMsg(msg+'34');
-  					}
+  					},
   					success:function(data){
   						if(data.op_2){
   							alert("排队太多，放弃吧!");
