@@ -468,10 +468,11 @@
    					   if( msg.waitTime<=0 && msg.orderId !="") {
   							//Success!
 
-  							   //window.location.replace(userInfoUrl)
+  							   //
             alert("车票预订成功，恭喜! 订单号："+msg.orderId);
             notify("车票预订成功，恭喜!",500); 
-       					   //return;
+            window.location.replace(userInfoUrl);
+       					return;
   						 }else {
   						  //alert(msg);
           showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
@@ -598,7 +599,11 @@
       						      success:function(data){
    		             if(data.errMsg != 'Y'){
    		             alert(data.errMsg);
-                  refreshImg();
+                  if data.errmsg.match(/验证码/){
+                      refreshImg();
+                       $("#rand").val('');
+                      $("#rand").focus();
+                  }
    		             }else{
    		             t = setInterval(submitForm, freq);
     				         	doing = !doing;
