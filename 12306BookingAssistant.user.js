@@ -468,7 +468,8 @@
    					   if( msg.waitTime<=0 && msg.orderId !="") {
   							//Success!
 
-  							   //window.location.replace(userInfoUrl);
+  							   //window.location.replace(userInfoUrl)
+            alert("车票预订成功，恭喜! 订单号："+msg.orderId);
             if(tour=='dc'){
   		         //异步下单-单程
  			         submiturl="confirmPassengerAction.do?method=payOrder&orderSequence_no="+msg.orderId;
@@ -480,7 +481,7 @@
  		         submiturl="confirmPassengerAction.do?method=backPay&orderSequence_no="+msg.orderId;
  		          }else if(tour=='gc'){
  			         //异步下单-改签
- 		         	submiturl="confirmPassengerResignAction.do?method=resignPay&orderSequence_no="+returnObj.orderId;
+ 		         	submiturl="confirmPassengerResignAction.do?method=resignPay&orderSequence_no="+msg.orderId;
  	           }
             $.ajax({ 
       			         url :submiturl,
@@ -494,7 +495,7 @@
     		            // t = setInterval(submitForm, freq);
      				         	//doing = !doing;
     		             //             
-                   alert("车票预订成功，恭喜! 订单号："+msg.orderId);
+
    							         notify("车票预订成功，恭喜!",500); 
        						      },
        						      error:function(){
