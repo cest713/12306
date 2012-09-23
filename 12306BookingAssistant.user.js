@@ -558,7 +558,7 @@ withjQuery(function($){
 					jQuery.ajax({ 
  				        url :'confirmPassengerAction.do?method=getQueueCount',
   					type :"GET",
-  					data:{train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val(),ticket:$("#left_ticket").val()},
+  					data:{"tourFlag : "+tourFlag+",train_date : "+$("#start_date").val()+",station : "+$("#station_train_code").val()+",seat:"+$("#passenger_1_seat").val()+",from:"+$("#from_station_telecode").val()+",to:"+$("#to_station_telecode").val()+",ticket:"+$("#left_ticket").val()},
   					dataType: "json", 
   					error: function(msg){
   						showMsg(msg+'34');
@@ -601,7 +601,7 @@ withjQuery(function($){
  		                          	            
  				              }
  					}
-  					})
+  					});
 					//submitForm();
 				}
 			
