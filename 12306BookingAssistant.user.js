@@ -451,7 +451,7 @@
   	    jQuery.ajax({
   				 url: 'myOrderAction.do?method=getOrderWaitTime',
        type: "GET",
- 	     data:{tourFlag : "dc",train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+ 	     data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
    				dataType: "json", 
   					timeout:10000,
   					success: function(msg)
@@ -471,11 +471,11 @@
   							   window.location.replace(userInfoUrl);
   							   return;
   						 }else {
-  						  alert(msg);
+  						  //alert(msg);
           showMsg('等待'+msg.waitCount+'人,'+msg.waitTime+'秒');	
   						}
   						} else{
-   					 alert("提交数据错误，无法订票！");
+   					 //alert("提交数据错误，无法订票！");
         
   						}
        
@@ -593,12 +593,12 @@
      				        data: $('#confirmPassenger').serialize(),
      						      dataType: "json", 
       						      success:function(data){
-   		             if(data.errMsg != 'Y'){
-   		             alert(data.errMsg)
-   		             }else{
+   		             //if(data.errMsg != 'Y'){
+   		            // alert(data.errMsg)
+   		             //}else{
    		             t = setInterval(submitForm, freq);
     				         	doing = !doing;
-   		                          	             }
+   		             //             	             }
       						      },
       						      error:function(){
       						      	alert("下单失败，网络繁忙");
