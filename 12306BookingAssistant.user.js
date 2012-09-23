@@ -219,15 +219,15 @@
   			count = 1;
   			$(this).html("(1)次登录中...");
   			//notify('开始尝试登录，请耐心等待！', 400);
-  			  alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+  			  //alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
   			submitForm();
   			return false;
   		}));
   
-  		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
-    if($("#UserName").val().indexof("用户名")>=0){
+  		//alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
+    //if($("#UserName").val().indexof("用户名")>=0){
         $("#UserName").focus();
-    }
+    //}
   	});
   	
  	route("querySingleAction.do", function() {
@@ -405,9 +405,9 @@
  						return false;
  					}))
  			);
-   if($("#fromStationText").val().indexof('汉字')>=0){
-    $("#fromStationText").focus();
-   }
+  // if($("#fromStationText").val().indexof('汉字')>=0){
+   $("#fromStationText").focus();
+  // }
  		var container = $(".cx_title_w:first");
  		container.length ?
  			ui.insertBefore(container) : ui.appendTo(document.body);
