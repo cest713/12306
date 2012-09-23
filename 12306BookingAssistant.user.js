@@ -225,7 +225,7 @@
   		}));
   
   		alert('如果使用自动登录功能，请输入用户名、密码及验证码后，点击自动登录，系统会尝试登录，直至成功！');
-    if($("#UserName").val()==""){
+    if($("#UserName").val().indexof("用户名"")>=0){
         $("#UserName").focus();
     }
   	});
@@ -405,7 +405,7 @@
  						return false;
  					}))
  			);
-   if($("#fromStationText").val()==""){
+   if($("#fromStationText").val().indexof('汉字')>=0){
     $("#fromStationText").focus();
    }
  		var container = $(".cx_title_w:first");
