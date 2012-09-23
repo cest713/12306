@@ -451,7 +451,7 @@
  		   
  			jQuery.ajax({
  				        url: 'myOrderAction.do?method=getOrderWaitTime',
- 				        data: data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+ 				        data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
  					type: "GET",
  					timeout: 30000,
  					success: function(msg)
@@ -556,11 +556,11 @@
  					//tourFlag = "dc";
  					jQuery.ajax({ 
   				        url :'confirmPassengerAction.do?method=getQueueCount',
-   					type :"GET",
- 		            data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
-   					dataType: "json", 
-   					error: function(msg){
-   						showMsg(msg+'34');
+   					     type :"GET",
+  			        data:{tourFlag : tour,train_date : $("#start_date").val(),station : $("#station_train_code").val(),seat:$("#passenger_1_seat").val(),from:$("#from_station_telecode").val(),to:$("#to_station_telecode").val()},
+    					   dataType: "json", 
+   					    error: function(msg){
+   						  showMsg(msg+'34');
    					},
    					success:function(data){
    						if(data.op_2){
